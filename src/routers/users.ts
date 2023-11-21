@@ -10,6 +10,7 @@ import { validateuser } from '../middlewares/validator'
 const router = express.Router()
 
 
+
 router.get('/',user.getAllUsers)
 
 router.get('/:userName',user.getOneUser)
@@ -74,6 +75,7 @@ router.put('/:userName',user.updateUser)
 //     users,
 //   })
 // })
+
 
 export default router
 

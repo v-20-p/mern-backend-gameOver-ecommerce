@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 
+
   isAdmin:{
     type:Boolean,
     default:false
@@ -24,8 +25,14 @@ const userSchema = new mongoose.Schema({
   
   orders: [{
     type: mongoose.Schema.Types.ObjectId,
+
+  // relation between order and user should be many orders to one user
+  // here's 1to1 just for the demo
+  orders: {
+    type: [mongoose.Schema.Types.ObjectId],
     ref: 'Order',
-  }],
+  }
+}],
 });
 
 export const Users=mongoose.model('users', userSchema)
