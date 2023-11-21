@@ -41,3 +41,6 @@ Method: GET, Path: /, Date: 11/21/2023, Time: 2:18:06 PM
 Method: GET, Path: /, Date: 11/21/2023, Time: 2:22:02 PM
 
 Method: GET, Path: /api/users, Date: 21/11/2023, Time: 7:32:18 PM
+Method: GET, Path: /api/users, Date: 21/11/2023, Time: 7:51:21 PM
+Method: GET, Path: /api/users/v-20-p, Date: 21/11/2023, Time: 7:51:29 PM
+Method: PUT, Path: /api/users/v-20-p, Date: 21/11/2023, Time: 7:51:44 PM

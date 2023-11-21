@@ -2,7 +2,7 @@ import express from 'express'
 const router = express.Router()
 
 import Order from '../models/order'
-import User from '../models/user'
+import {Users} from '../models/user'
 
 router.get('/', async (req, res) => {
   const orders = await Order.find().populate('products','user')
@@ -20,11 +20,12 @@ router.post('/', async (req, res, next) => {
   console.log('orderId:', order._id)
   await order.save();
 
-  const updateUser=await User.findOneAndUpdate(
+  const updateUser=await Users.findOneAndUpdate(
     {_id:user},
    { orders:  order } ,
     {new:true}
 );
+if(updateUser)
  await updateUser.save()
   res.json(order)
 })
