@@ -22,3 +22,14 @@ Method: POST, Path: /api/orders, Date: 9/19/2022, Time: 2:42:48 PM
 Method: POST, Path: /api/orders, Date: 9/19/2022, Time: 2:45:24 PM
 Method: GET, Path: /api/users, Date: 9/19/2022, Time: 2:48:09 PM
 Method: GET, Path: /api/users, Date: 9/19/2022, Time: 2:48:24 PM
+Method: GET, Path: /api/users, Date: 21/11/2023, Time: 6:57:23 PM
+Method: GET, Path: /api/users, Date: 21/11/2023, Time: 6:57:48 PM
+Method: GET, Path: /api/users/v, Date: 21/11/2023, Time: 6:57:57 PM
+Method: GET, Path: /api/users/v, Date: 21/11/2023, Time: 6:59:07 PM
+Method: POST, Path: /api/users, Date: 21/11/2023, Time: 7:03:17 PM
+Method: GET, Path: /api/users, Date: 21/11/2023, Time: 7:03:31 PM
+Method: GET, Path: /api/users/v-20-p, Date: 21/11/2023, Time: 7:03:41 PM
+Method: GET, Path: /api/users/v-20-p, Date: 21/11/2023, Time: 7:06:10 PM
+Method: POST, Path: /api/users, Date: 21/11/2023, Time: 7:06:37 PM
+Method: PUT, Path: /api/users/v-20-p, Date: 21/11/2023, Time: 7:10:50 PM
+Method: PUT, Path: /api/users/v-20-p, Date: 21/11/2023, Time: 7:11:11 PM
