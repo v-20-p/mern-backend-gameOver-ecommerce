@@ -22,3 +22,7 @@ Method: POST, Path: /api/orders, Date: 9/19/2022, Time: 2:42:48 PM
 Method: POST, Path: /api/orders, Date: 9/19/2022, Time: 2:45:24 PM
 Method: GET, Path: /api/users, Date: 9/19/2022, Time: 2:48:09 PM
 Method: GET, Path: /api/users, Date: 9/19/2022, Time: 2:48:24 PM
+Method: GET, Path: /, Date: 11/21/2023, Time: 2:16:20 PM
+Method: GET, Path: /, Date: 11/21/2023, Time: 2:16:55 PM
+Method: GET, Path: /, Date: 11/21/2023, Time: 2:18:06 PM
+Method: GET, Path: /, Date: 11/21/2023, Time: 2:22:02 PM
