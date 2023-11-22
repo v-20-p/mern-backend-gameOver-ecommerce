@@ -21,7 +21,6 @@ app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 
-app.use(apiErrorHandler)
 
 mongoose
   .connect(URL)
@@ -35,3 +34,5 @@ mongoose
 app.listen(PORT, () => {
   console.log('Server running http://localhost:' + PORT)
 })
+app.use(apiErrorHandler)
+

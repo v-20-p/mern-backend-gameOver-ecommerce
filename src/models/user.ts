@@ -23,8 +23,7 @@ const userSchema = new mongoose.Schema({
     default:false
   },
   
-  orders: [{
-    type: mongoose.Schema.Types.ObjectId,
+ 
 
   // relation between order and user should be many orders to one user
   // here's 1to1 just for the demo
@@ -32,7 +31,7 @@ const userSchema = new mongoose.Schema({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'Order',
   }
-}],
+
 });
 
 export const Users=mongoose.model('users', userSchema)
