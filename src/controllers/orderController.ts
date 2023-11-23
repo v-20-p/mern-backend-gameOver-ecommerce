@@ -3,29 +3,6 @@ import slugify from 'slugify'
 import Order from '../models/order'
 import Product from '../models/product'
 
-export const deleteOrderById = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const order = await Order.findOneAndDelete({ _id: req.params.orderId })
-    res.send({ message: 'deleted a single order', payload: order })
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
-  const orders = await Order.find().populate('products.product')
-  res.json(orders)
-}
-
-export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const order = await Order.find({ _id: req.params.orderId }).populate('products.product')
-    res.send({ message: 'returned single order', payload: order })
-  } catch (error) {
-    next(error)
-  }
-}
-
 export const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name, user, products } = req.body
@@ -77,6 +54,28 @@ export const placeOrder = async (req: Request, res: Response, next: NextFunction
 
     await order.save()
     res.status(201).send({ message: 'Order placed successfully.', order })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
+  const orders = await Order.find().populate('products.product')
+  res.json(orders)
+}
+
+export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const order = await Order.find({ _id: req.params.orderId }).populate('products.product')
+    res.send({ message: 'returned single order', payload: order })
+  } catch (error) {
+    next(error)
+  }
+}
+export const deleteOrderById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const order = await Order.findOneAndDelete({ _id: req.params.orderId })
+    res.send({ message: 'deleted a single order', payload: order })
   } catch (error) {
     next(error)
   }
