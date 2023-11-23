@@ -29,8 +29,8 @@ const userSchema = new mongoose.Schema({
   // here's 1to1 just for the demo
   orders: {
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Order',
-  }
+    ref: 'Order',}
+  
 
 });
 

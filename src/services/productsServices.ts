@@ -1,4 +1,4 @@
-import { Product, ProductInterface } from '../models/productSchema'
+import { Product, ProductInterface } from '../models/product'
 import { createError } from '../utility/createError'
 
 export const findAllProducts = async (page = 1, limit = 3) => {
