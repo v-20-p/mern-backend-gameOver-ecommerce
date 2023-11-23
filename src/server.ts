@@ -1,15 +1,16 @@
-import express from 'express'
+import express, { Application } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
 import usersRouter from './routers/users'
-import productsRouter from './routers/products'
+import productsRouter from './routers/productsRouter'
 import ordersRouter from './routers/orders'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
+import { createError } from './utility/createError'
 
 config()
-const app = express()
+const app: Application = express()
 const PORT = 5050
 const URL = process.env.ATLAS_URL as string
 
@@ -17,10 +18,21 @@ app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 
+app.get('/', (req, res) => {
+  res.send('healthe checkup')
+})
+
 app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 
+
+app.use((req, res, next) => {
+  const error = createError(404, 'Rout not found')
+  next(error)
+})
+
+app.use(apiErrorHandler)
 
 mongoose
   .connect(URL)

@@ -3,6 +3,9 @@ dist
 .env
 
 src/logs/requests.txt
+yarn.lock
+package-lock.json
+
 # Logs
 logs
 *.log
