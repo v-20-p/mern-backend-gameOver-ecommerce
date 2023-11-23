@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
 import Order from '../models/order'
-import Product from '../models/product'
+import {Product} from '../models/product'
 
 export const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {

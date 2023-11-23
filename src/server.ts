@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { config } from 'dotenv'
 
 import usersRouter from './routers/users'
-import productsRouter from './routers/productsRouter'
+import productsRouter from './routers/products'
 import ordersRouter from './routers/orders'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'

@@ -7,7 +7,7 @@ import {
   findAllProducts,
   findProductBySlug,
 } from '../services/productsServices'
-import { Product, ProductInterface } from '../models/productSchema'
+import { Product, ProductInterface } from '../models/product'
 import { createError } from '../utility/createError'
 
 const successResponse = (res: Response, statusCode = 200, message = 'successful', payload = {}) => {
