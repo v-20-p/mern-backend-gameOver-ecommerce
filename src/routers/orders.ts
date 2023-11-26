@@ -1,31 +1,25 @@
-import express from 'express'
+import express, { Router } from 'express'
+
+import {deleteOrderById,getAllOrders,getOrderById,placeOrder} from '../controllers/order'
+import { runValidation } from '../middlewares/runVaildator'
+import { validateIdOrder } from '../middlewares/validator'
+
 const router = express.Router()
 
-import Order from '../models/order'
-import User from '../models/user'
 
-router.get('/', async (req, res) => {
-  const orders = await Order.find().populate('products')
-  res.json(orders)
-})
+//GET: /api/orders -> return all orders
+router.get('/', getAllOrders)
 
-router.post('/', async (req, res, next) => {
-  const { name, products } = req.body
+//POST: /api/orders -> create order 
+router.post('/',placeOrder)
 
-  const order = new Order({
-    name,
-    products,
-  })
-  console.log('orderId:', order._id)
+//GET: /api/orders:orderId -> return detail of single order
+router.get('/:orderId',validateIdOrder,runValidation,getOrderById)
 
-  const user = new User({
-    name: 'Walter',
-    order: order._id,
-  })
+//DELETE: /api/orders:orderId -> delete single order by Id
+router.delete('/:orderId',validateIdOrder,runValidation ,deleteOrderById)
 
-  await order.save()
-  await user.save()
-  res.json(order)
-})
+
+
 
 export default router

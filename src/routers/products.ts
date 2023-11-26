@@ -1,31 +1,33 @@
-import express from 'express'
-const router = express.Router()
+import { Router } from 'express'
 
-import Product from '../models/product'
-import Order from '../models/order'
-import ApiError from '../errors/ApiError'
+import {
+  createProduct,
+  deleteProduct,
+  getAllProducts,
+  getFilteredProducts,
+  getSingleProduct,
+  updateProduct,
+} from '../controllers/productsController'
+import { upload } from '../middlewares/uploadFile'
 
-router.get('/', async (_, res) => {
-  const products = await Product.find()
-  console.log('products:', products)
-  res.json(products)
-})
+const productsRouter = Router()
 
-router.post('/', async (req, res, next) => {
-  const { name, description, quantity } = req.body
+//GET: /api/products' -> return all products
+productsRouter.get('/', getAllProducts)
 
-  if (!name || !description) {
-    next(ApiError.badRequest('Name and Description are requried'))
-    return
-  }
-  const product = new Product({
-    name,
-    description,
-    quantity,
-  })
+//GET: /api/products/filtered' -> return all products
+productsRouter.get('/filtered', getFilteredProducts)
 
-  await product.save()
-  res.json(product)
-})
+//GET: /api/products/:slug' -> return single product by its slug
+productsRouter.get('/:slug', getSingleProduct)
 
-export default router
+//POST: /api/products' -> create new product
+productsRouter.post('/', upload.single('image'), createProduct)
+
+//DELETE: /api/products/:slug' -> delete single product by its slug
+productsRouter.delete('/:slug', deleteProduct)
+
+//PUT: /api/products/:slug' -> update single product by its slug
+productsRouter.put('/:slug', updateProduct)
+
+export default productsRouter
