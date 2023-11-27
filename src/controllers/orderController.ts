@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
 import Order from '../models/order'
-import {Product} from '../models/product'
+import {Product} from '../models/productsSchema'
 
 export const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -60,14 +60,23 @@ export const placeOrder = async (req: Request, res: Response, next: NextFunction
 }
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
-  const orders = await Order.find().populate('products.product')
-  res.json(orders)
+
+  try{
+    const orders = await Order.find().populate('products.product')
+    if(!orders){
+      return res.status(404).send({ message: 'list of Orders not found' });
+    }
+    res.status(201).json(orders)
+
+  }catch(error){
+next(error)
+  }
 }
 
 export const getOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await Order.find({ _id: req.params.orderId }).populate('products.product')
-    res.send({ message: 'returned single order', payload: order })
+    res.status(201).send({ message: 'returned single order', payload: order })
   } catch (error) {
     next(error)
   }
@@ -75,7 +84,7 @@ export const getOrderById = async (req: Request, res: Response, next: NextFuncti
 export const deleteOrderById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const order = await Order.findOneAndDelete({ _id: req.params.orderId })
-    res.send({ message: 'deleted a single order', payload: order })
+    res.status(201).send({ message: 'deleted a single order', payload: order })
   } catch (error) {
     next(error)
   }

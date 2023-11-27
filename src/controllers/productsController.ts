@@ -1,17 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
 
-import {
-  deleteProductBySlug,
-  filterProductsByPrice,
-  findAllProducts,
-  findProductBySlug,
-} from '../services/productsServices'
-import { Product, ProductInterface } from '../models/product'
-import { createError } from '../utility/createError'
+import * as service from '../services/productsServices'
+import { Product, ProductInterface } from '../models/productsSchema'
+import ApiError from '../errors/ApiError'
+import { ProductInput } from '../types'
 
 const successResponse = (res: Response, statusCode = 200, message = 'successful', payload = {}) => {
-  //payload refers to the data we send (the name can be anything)
   res.status(statusCode).send({
     message,
     payload: payload,
@@ -23,7 +18,7 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
     let page = Number(req.query.page)
     const limit = Number(req.query.limit)
 
-    const { products, totalPages, currentPage } = await findAllProducts(page, limit)
+    const { products, totalPages, currentPage } = await service.findAllProducts(page, limit)
 
     res.send({
       message: 'Return all products',
@@ -43,7 +38,7 @@ export const getFilteredProducts = async (req: Request, res: Response, next: Nex
     let page = Number(req.query.page)
     const limit = Number(req.query.limit)
 
-    const { products } = await filterProductsByPrice(page, limit)
+    const { products } = await service.filterProductsByPrice(page, limit)
 
     successResponse(res, 200, 'Return filtered products', products)
   } catch (error) {
@@ -54,7 +49,7 @@ export const getFilteredProducts = async (req: Request, res: Response, next: Nex
 export const getSingleProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { slug } = req.params
-    const product = await findProductBySlug(slug)
+    const product = await service.findProductBySlug(slug)
 
     successResponse(res, 200, 'Single product is rendered', product)
   } catch (error) {
@@ -66,25 +61,19 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
   try {
     const { name, price, description, quantity, sold, shipping } = req.body
 
-    const productExist = await Product.exists({ name })
-    if (!productExist) {
-      const newProduct: ProductInterface = new Product({
-        name,
-        slug: slugify(name),
-        price,
-        description,
-        image: req.file?.path,
-        quantity,
-        sold,
-        shipping,
-      }) //create and push new product to mongodb
-      await newProduct.save()
+    const newProduct: ProductInterface = new Product({
+      name,
+      slug: slugify(name),
+      price,
+      description,
+      image: req.file?.path,
+      quantity,
+      sold,
+      shipping,
+    })
+    await newProduct.save()
 
-      successResponse(res, 201, 'New product is created', newProduct)
-    } else {
-      const error = createError(404, 'This product is already exist')
-      throw error
-    }
+    successResponse(res, 201, 'New product is created', newProduct)
   } catch (error) {
     next(error)
   }
@@ -92,10 +81,14 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
 
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const slug = req.params.slug
-    const product = await deleteProductBySlug(slug)
+    const id = req.params.id
+    const product = await service.deleteProductById(id)
 
-    successResponse(res, 200, `Product ${slug} is deleted`, product)
+    if (!product) {
+      throw new ApiError(404, 'No product found with this id')
+    }
+
+    successResponse(res, 200, `Product ${id} is deleted`, product)
   } catch (error) {
     next(error)
   }
@@ -108,17 +101,18 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       req.body.slug = slugify(name)
     }
 
-    const slug = req.params.slug
-    const updatedProductData = req.body
-    const updatedProduct = await Product.findOneAndUpdate(
-      { slug: req.params.slug },
+    const id = req.params.id
+    const updatedProductData: ProductInput = req.body
+    const updatedProduct = await Product.findByIdAndUpdate(
+      { id },
       updatedProductData,
       { new: true }
     )
+    
     if (updatedProduct) {
-      successResponse(res, 200, `Product ${slug} is updated`, updatedProduct)
+      successResponse(res, 200, `Product ${id} is updated`, updatedProduct)
     } else {
-      throw new Error(`No product found with this slug ${slug}`)
+      throw new ApiError(404, `No product found with this id ${id}`)
     }
   } catch (error) {
     next(error)

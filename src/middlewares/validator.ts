@@ -1,11 +1,12 @@
 import { check, param } from 'express-validator'
-
 import { Users } from '../models/user'
 import Order from '../models/order'
 import order from '../models/order'
 import { Request } from 'express'
+import { Product } from '../models/productsSchema'
+
 export const validateuser = [
-  check('userName')
+  check('userName').optional()
     .notEmpty()
     .withMessage('Username must not be empty')
     .custom(async (value: string) => {
@@ -20,11 +21,32 @@ export const validateuser = [
 
       return true
     }),
+  check('password').optional().notEmpty().withMessage('password is required'),
+  check('email').optional().notEmpty().isEmail().withMessage('invalid email'),
   check('name').optional().notEmpty().withMessage('Name is required'),
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),
 ]
 export const validateIdProduct = [check('id').isNumeric().withMessage('id must be a number')]
+
+export const validateProduct = [
+  check('name')
+    .notEmpty()
+    .withMessage('Product name is required')
+    .custom(async (value: string) => {
+      // Check if the product is already in use
+      const existingProduct = await Product.findOne({ name: value })
+      if (existingProduct) {
+        throw new Error('There is already product with the same name')
+      }
+
+      return true
+    }),
+  check('price').notEmpty().withMessage('Price is required'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('quantity').notEmpty().withMessage('Quantity is required'),
+  check('shipping').notEmpty().withMessage('Shipping is required'),
+]
 
 export const validateIdOrder = [
   param('orderId')

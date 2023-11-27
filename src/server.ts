@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 import { config } from 'dotenv'
 import 'dotenv/config'
 import usersRouter from './routers/users'
-import productsRouter from './routers/products'
+import productsRouter from './routers/productsRouter'
 import ordersRouter from './routers/orders'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
@@ -29,10 +29,10 @@ app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
 
 
-app.use((req, res, next) => {
-  const error = createError(404, 'Rout not found')
-  next(error)
-})
+// app.use((req, res, next) => {
+//   const error = createError(404, 'Rout not found')
+//   next(error)
+// })
 
 app.use(apiErrorHandler)
 
@@ -48,5 +48,5 @@ mongoose
 app.listen(PORT, () => {
   console.log(`Server running http://localhost:${PORT}`)
 })
-app.use(apiErrorHandler)
+//app.use(apiErrorHandler)
 
