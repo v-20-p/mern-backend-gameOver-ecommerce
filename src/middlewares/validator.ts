@@ -1,5 +1,4 @@
 import { check, param } from 'express-validator'
-
 import { Users } from '../models/user'
 import Order from '../models/order'
 import order from '../models/order'
