@@ -16,8 +16,8 @@ const PORT = 5050
 const URL = process.env.MONGODB_URL as string
 
 app.use(myLogger)
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+app.use(express.urlencoded({ extended: true })),
+app.use(express.json()),
 
 app.get('/', (req, res) => {
   res.send('healthe checkup')
