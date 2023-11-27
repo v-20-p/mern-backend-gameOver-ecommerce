@@ -27,10 +27,10 @@ app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 
 
-app.use((req, res, next) => {
-  const error = createError(404, 'Rout not found')
-  next(error)
-})
+// app.use((req, res, next) => {
+//   const error = createError(404, 'Rout not found')
+//   next(error)
+// })
 
 app.use(apiErrorHandler)
 
@@ -46,5 +46,5 @@ mongoose
 app.listen(PORT, () => {
   console.log('Server running http://localhost:' + PORT)
 })
-app.use(apiErrorHandler)
+//app.use(apiErrorHandler)
 

@@ -1,3 +1,4 @@
+import ApiError from '../errors/ApiError'
 import { Product, ProductInterface } from '../models/productSchema'
 import { createError } from '../utility/createError'
 
@@ -49,18 +50,18 @@ export const filterProductsByPrice = async (page = 1, limit = 3) => {
 export const findProductBySlug = async (slug: string): Promise<ProductInterface> => {
   const product = await Product.findOne({ slug })
   if (!product) {
-    const error = createError(404, `No product found with this slug ${slug}`)
-    throw error
+    throw new ApiError(404, `No product found with this slug ${slug}`)
   }
 
   return product
 }
 
-export const deleteProductBySlug = async (slug: string) => {
-  const product = await Product.findOneAndDelete({ slug })
+export const deleteProductById = async (id: string) => {
+  //const product = await Product.findOneAndDelete({ id })
+  const product = await Product.findByIdAndDelete(id)
+  
   if (!product) {
-    const error = createError(404, `No product found with this slug ${slug}`)
-    throw error
+    throw new ApiError(404, `No product found with this id ${id}`)
   }
 
   return product
