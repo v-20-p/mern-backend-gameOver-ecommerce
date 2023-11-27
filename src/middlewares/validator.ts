@@ -5,7 +5,7 @@ import Order from '../models/order'
 import order from '../models/order'
 import { Request } from 'express'
 export const validateuser = [
-  check('userName')
+  check('userName').optional()
     .notEmpty()
     .withMessage('Username must not be empty')
     .custom(async (value: string) => {
@@ -20,6 +20,8 @@ export const validateuser = [
 
       return true
     }),
+  check('password').optional().notEmpty().withMessage('password is required'),
+  check('email').optional().notEmpty().isEmail().withMessage('invalid email'),
   check('name').optional().notEmpty().withMessage('Name is required'),
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),

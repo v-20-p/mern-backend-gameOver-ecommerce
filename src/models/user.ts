@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
-
-
+import bcrypt from 'bcrypt'
 const userSchema = new mongoose.Schema({
   userName: {
     type: String,
@@ -11,7 +10,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-
+  email:{
+    type:String,
+    required: true,
+  },
+  password:{
+    type:String,
+    required: true,
+    // set:(password:string)=>bcrypt.hash(password,8)
+  },
+  image:{
+    type:String,
+    default:'public/images/usersimages/default_user.png'
+  },
 
   isAdmin:{
     type:Boolean,
@@ -22,16 +33,15 @@ const userSchema = new mongoose.Schema({
     type:Boolean,
     default:false
   },
-  
- 
 
-  // relation between order and user should be many orders to one user
-  // here's 1to1 just for the demo
-  orders: {
+  wishList:[{
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Order',}
-  
-
+    ref: 'Product',
+  }],
+  orders: [{
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Order',
+  }]
 });
 
 export const Users=mongoose.model('users', userSchema)
