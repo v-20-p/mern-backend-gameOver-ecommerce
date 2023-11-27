@@ -5,6 +5,7 @@ import express from 'express'
 import * as user from '../controllers/userController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateuser } from '../middlewares/validator'
+import { uploadUserImg } from '../middlewares/uploadFile'
 
 const router = express.Router()
 
@@ -14,7 +15,14 @@ router.get('/:userName', user.getOneUser)
 
 router.post('/', validateuser, runValidation, user.newUser)
 
-router.put('/:userName', user.updateUser)
+
+router.get('/:userName',user.getOneUser)
+
+router.post('/',validateuser,runValidation,uploadUserImg.single('image'),user.newUser)
+
+router.put('/:userName',user.updateUser)
+
+router.get('/user/activate/:token',)
 
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)

@@ -1,5 +1,5 @@
 import ApiError from '../errors/ApiError'
-import { Product, ProductInterface } from '../models/productSchema'
+import { Product, ProductInterface } from '../models/productsSchema'
 import { createError } from '../utility/createError'
 
 export const findAllProducts = async (page = 1, limit = 3) => {

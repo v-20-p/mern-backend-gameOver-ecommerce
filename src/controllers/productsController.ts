@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
 
 import * as service from '../services/productsServices'
-import { Product, ProductInterface } from '../models/productSchema'
+import { Product, ProductInterface } from '../models/productsSchema'
 import ApiError from '../errors/ApiError'
 import { ProductInput } from '../types'
 

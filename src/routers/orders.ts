@@ -1,33 +1,25 @@
-import express from 'express'
+import express, { Router } from 'express'
+
+import {deleteOrderById,getAllOrders,getOrderById,placeOrder} from '../controllers/order'
+import { runValidation } from '../middlewares/runVaildator'
+import { validateIdOrder } from '../middlewares/validator'
+
 const router = express.Router()
 
-import Order from '../models/order'
-import {Users} from '../models/user'
 
-router.get('/', async (req, res) => {
-  const orders = await Order.find().populate('products','user')
-  res.json(orders)
-})
+//GET: /api/orders -> return all orders
+router.get('/', getAllOrders)
 
-router.post('/', async (req, res, next) => {
-  const { name, user ,products } = req.body
+//POST: /api/orders -> create order 
+router.post('/',placeOrder)
 
-  const order = new Order({
-    name,
-    user,
-    products,
-  })
-  console.log('orderId:', order._id)
-  await order.save();
+//GET: /api/orders:orderId -> return detail of single order
+router.get('/:orderId',validateIdOrder,runValidation,getOrderById)
 
-  const updateUser=await Users.findOneAndUpdate(
-    {_id:user},
-   { orders:  order } ,
-    {new:true}
-);
-if(updateUser)
- await updateUser.save()
-  res.json(order)
-})
+//DELETE: /api/orders:orderId -> delete single order by Id
+router.delete('/:orderId',validateIdOrder,runValidation ,deleteOrderById)
+
+
+
 
 export default router
