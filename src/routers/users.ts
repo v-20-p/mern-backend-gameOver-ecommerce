@@ -11,18 +11,14 @@ const router = express.Router()
 
 router.get('/', user.getAllUsers)
 
-router.get('/:userName', user.getOneUser)
-
-router.post('/', validateuser, runValidation, user.newUser)
-
 
 router.get('/:userName',user.getOneUser)
 
-router.post('/',validateuser,runValidation,uploadUserImg.single('image'),user.newUser)
+router.post('/',uploadUserImg.single('image'),validateuser,runValidation,user.newUser)
 
 router.put('/:userName',user.updateUser)
 
-router.get('/user/activate/:token',)
+router.get('/user/activate/:token',user.activateUser)
 
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)

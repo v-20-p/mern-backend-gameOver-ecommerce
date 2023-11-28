@@ -1,6 +1,6 @@
 import express, { Router } from 'express'
 
-import {deleteOrderById,getAllOrders,getOrderById,placeOrder} from '../controllers/order'
+import {deleteOrderById,getAllOrders,getOrderById,placeOrder} from '../controllers/orderController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateIdOrder } from '../middlewares/validator'
 
