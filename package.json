@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "ts-watch": "tsc -w",
-    "start": "nodemon --watch 'src/**/*.ts' --exec ts-node src/server.ts"
+    "start": "nodemon --watch \"src/**/*.ts\" --exec ts-node src/server.ts"
   },
   "dependencies": {
     "@types/bcrypt": "^5.0.2",

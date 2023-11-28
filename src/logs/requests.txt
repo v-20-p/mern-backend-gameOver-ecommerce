@@ -420,3 +420,9 @@ Method: POST, Path: /api/users, Date: 27/11/2023, Time: 1:49:05 PM
 Method: POST, Path: /api/users, Date: 27/11/2023, Time: 2:02:30 PM
 Method: POST, Path: /api/users, Date: 27/11/2023, Time: 2:30:36 PM
 Method: GET, Path: /api/users/user/activate/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoia2hhbGlkIiwidXNlck5hbWUiOiJkZGRmY3ZiYyIsImVtYWlsIjoiaXh2LnB4aUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IiQyYiQwNyQwazBaUXZpU0JyTTl5MVkxa0xvVGwuQmdIMzg4WnYycXk5WnNENmJ1ZzhHTHBhQktlQTZzYSIsImlhdCI6MTcwMTA4NDYzNiwiZXhwIjoxNzAxMDg1MjM2fQ.NSMz2weVyhyrYozpABrOnb0ex5MUN4_WqMKhvNxKg5U, Date: 27/11/2023, Time: 2:32:59 PM
+Method: GET, Path: /, Date: 11/28/2023, Time: 11:15:07 PM
+Method: GET, Path: /favicon.ico, Date: 11/28/2023, Time: 11:15:07 PM
+Method: GET, Path: /api/products, Date: 11/28/2023, Time: 11:16:16 PM
+Method: GET, Path: /, Date: 11/28/2023, Time: 11:17:11 PM
+Method: GET, Path: /api/products, Date: 11/28/2023, Time: 11:17:18 PM
+Method: GET, Path: /api/products, Date: 11/28/2023, Time: 11:35:02 PM

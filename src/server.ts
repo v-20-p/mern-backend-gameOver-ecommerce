@@ -8,7 +8,6 @@ import ordersRouter from './routers/orders'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
-import { createError } from './utility/createError'
 
 config()
 const app: Application = express()
