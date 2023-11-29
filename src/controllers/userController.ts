@@ -156,7 +156,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 };
 export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.clearCookie('accessToken')
+        res.clearCookie('access_token')
         res.status(200).send({
             message: 'User logout successfully.',
            

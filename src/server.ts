@@ -10,7 +10,6 @@ import ordersRouter from './routers/orders'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
-import authenticationRouter from './routers/authenticationRoutes';
 
 config()
 const app: Application = express()
@@ -31,7 +30,6 @@ app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
-app.use('/authentication', authenticationRouter)
 
 app.use(apiErrorHandler)
 

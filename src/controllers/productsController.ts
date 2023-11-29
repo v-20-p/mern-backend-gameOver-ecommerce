@@ -4,6 +4,7 @@ import slugify from 'slugify'
 import { Product, ProductInterface } from '../models/productsSchema'
 import ApiError from '../errors/ApiError'
 import { deleteImage } from '../services/deleteImageService'
+import mongoose from 'mongoose'
 
 const successResponse = (res: Response, statusCode = 200, message = 'Successful', payload = {}) => {
   res.status(statusCode).send({
@@ -125,7 +126,12 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 
     successResponse(res, 200, `Product ${id} is deleted`, product)
   } catch (error) {
-    next(error)
+    if (error instanceof mongoose.Error.CastError) {
+      const error = new ApiError(404, "Invalid id");
+      next(error);
+    } else {
+      next(error);
+    }
   }
 }
 
@@ -147,6 +153,11 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
       throw new ApiError(404, `No product found with this id ${IDBObjectStore}`)
     }
   } catch (error) {
-    next(error)
+    if (error instanceof mongoose.Error.CastError) {
+      const error = new ApiError(404, "Invalid id");
+      next(error);
+    } else {
+      next(error);
+    }
   }
 }

@@ -4,6 +4,7 @@ import Order from '../models/order'
 import order from '../models/order'
 import { Request } from 'express'
 import { Product } from '../models/productsSchema'
+import { Category } from '../models/category'
 
 export const validateuser = [
   check('userName').optional()
@@ -44,7 +45,11 @@ export const validateCreateProduct = [
     }),
   check('price').notEmpty().withMessage('Price is required'),
   check('description').notEmpty().withMessage('Description is required'),
-  check('categoryId').notEmpty().withMessage('Category ID is required'),
+  check('categoryId').notEmpty().withMessage('Category ID is required').custom(async (value: string) => {
+    // Check if the category is exist or not
+    const existingCategory = await Category.findOne({ _id: value })
+    return true
+  }),
   check('quantity').notEmpty().withMessage('Quantity is required'),
   check('shipping').notEmpty().withMessage('Shipping is required'),
 ]
