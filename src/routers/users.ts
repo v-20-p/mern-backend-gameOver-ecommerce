@@ -13,7 +13,7 @@ const router = express.Router()
 router.get('/', user.getAllUsers)
 
 
-router.get('/:userName',user.getOneUser)
+router.get('/:userName',isLoggedIn,user.getOneUser)
 
 router.post('/',uploadUserImg.single('image'),validateuser,runValidation,user.newUser)
 
@@ -22,7 +22,7 @@ router.put('/:userName' , isLoggedIn,user.updateUser)
 router.get('/user/activate/:token',user.activateUser)
 
 router.post('/login',user.loginUser)
-router.post('/logout',user.logoutUser)
+router.post('/logout', isLoggedIn,user.logoutUser)
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)
 //   if (!user) {

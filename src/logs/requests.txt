@@ -553,3 +553,7 @@ Method: GET, Path: /api/users, Date: 29/11/2023, Time: 11:32:54 AM
 Method: GET, Path: /api/users/dddr444, Date: 29/11/2023, Time: 11:33:16 AM
 Method: POST, Path: /api/users/logout, Date: 29/11/2023, Time: 11:33:36 AM
 Method: GET, Path: /api/users/dddr444, Date: 29/11/2023, Time: 11:34:00 AM
+Method: GET, Path: /api/users/dddr444, Date: 29/11/2023, Time: 1:30:40 PM
+Method: GET, Path: /api/users/dddr444, Date: 29/11/2023, Time: 1:31:45 PM
+Method: GET, Path: /api/users/dddr444, Date: 29/11/2023, Time: 1:31:47 PM
+Method: GET, Path: /api/users/dddr444, Date: 29/11/2023, Time: 1:32:59 PM

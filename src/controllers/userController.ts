@@ -5,7 +5,16 @@ import bcrypt from 'bcrypt'
 import { sendEmail } from '../services/emailServices';
 import { dev } from '../config';
 import ApiError from '../errors/ApiError';
+import { deleteImage } from '../services/deleteImageService';
 
+
+
+
+const generateToken = (encodedData:any) => {
+  return Jwt.sign({ encodedData }, dev.app.secret_key, {
+    expiresIn: '3h',
+  })
+}
 
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -74,14 +83,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
     try {
       const { token } = req.params;
   
-      interface User {
-        name: string;
-        userName: string;
-        image?: string | undefined;
-        email: string;
-        password: string;
-      }
-  
+
       const decodedToken = await Jwt.verify(token, dev.app.secret_key) ;
       if (!decodedToken) {
         throw ApiError.badRequest(403,'Token was invalid')
@@ -137,12 +139,11 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         if(!isPasswordMatch){
             next('not vaild password')
         }
-        const accessToken=Jwt.sign({_id:user._id},dev.app.secret_key,{expiresIn:'5m'})
-        res.cookie('accessToken',accessToken,{
-            maxAge: 5*60*1000,
-            httpOnly:true,
-            sameSite:'none'
-        })
+        res.cookie('access_token', generateToken(String(user._id)), {
+            maxAge: 15 * 60 * 1000, //15 minutes
+            httpOnly: true,
+            sameSite: 'none',
+          })
 
 
         res.status(200).send({
@@ -164,6 +165,41 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 };
+export const updateBan = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userName = req.params.userName
+      const user = await Users.findOne({ userName: userName })
+      if (!user) {
+        throw ApiError.badRequest(404, 'User was not found')
+      }
+       user.isBan= !user.isBan
+       await user.save()
+
+      res.status(200).send({
+        message: 'User status is updated',
+      })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  export const deleteSingleUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const userName = req.params.userName
+      const user = await Users.findOneAndDelete({ userName: userName })
+      if (!user) {
+        throw ApiError.badRequest(404,`user not found with this user name ${userName}`)
+      }
+      if (user && user.image) {
+        await deleteImage(user.image)
+      }
+      res.status(200).json({
+        message: `delete user with user name ${userName}`,
+      })
+    } catch (error) {
+        next(error)
+    }
+  }
 
 
 
