@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response ,  } from 'express'
 import ApiError from '../errors/ApiError';
-import { Users } from '../models/user';
+import { User } from '../models/user';
 import { dev } from '../config';
 import  Jwt, { JwtPayload }  from 'jsonwebtoken';
 
@@ -10,7 +10,7 @@ interface CustomRequest extends Request {
 
 export const isLoggedIn = async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
-        const accessToken= req.cookies.accessToken;
+        const accessToken= req.cookies.access_token;
   
       if (!accessToken) {
         throw ApiError.badRequest(401, 'You are not logged in')
@@ -43,7 +43,7 @@ export const isLoggedOut = async (req: Request, res: Response, next: NextFunctio
   
   export const isAdmin = async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
-      const user = await Users.findById(req.userId)
+      const user = await User.findById(req.userId)
       if (user?.isAdmin) {
         next()
       } else {
@@ -53,6 +53,3 @@ export const isLoggedOut = async (req: Request, res: Response, next: NextFunctio
       next(error)
     }
   }
-
-
-

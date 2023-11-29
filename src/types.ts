@@ -1,3 +1,4 @@
+import { CategoryInterface } from "./models/category";
 
 export interface ErrorInterface {
     status?: number;
@@ -5,9 +6,9 @@ export interface ErrorInterface {
 }
 
 export type ProductInput = {
-  name: string
+  title: string
   price: number
-  //category: CategoryInterface['id']; //import from categorySchema
+  category: CategoryInterface['id']; //import from categorySchema
   image: string
   description: string
   quantity: number

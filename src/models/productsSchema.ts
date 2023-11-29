@@ -1,11 +1,12 @@
 import { Schema, model, Document } from 'mongoose'
+import { CategoryInterface } from './category'
 
 export interface ProductInterface extends Document {
   id: string
-  name: string
+  title: string
   slug: string
   price: number
-  //category: CategoryInterface['id']; //import from categorySchema
+  categoryId: CategoryInterface['_id']; 
   image: string
   description: string
   quantity: number
@@ -17,13 +18,12 @@ export interface ProductInterface extends Document {
 
 const productSchema = new Schema(
   {
-    name: {
+    title: {
       type: String,
-      //index: true, //beneficial for fields that are used for filtering or sorting data.
       required: true,
       trim: true,
-      minlength: [3, 'Product name must be at least 3 characters'],
-      maxlength: [50, 'Product name must be at most 50 characters'],
+      minlength: [3, 'Product title must be at least 3 characters'],
+      maxlength: [50, 'Product title must be at most 50 characters'],
     },
     slug: {
       type: String,
@@ -46,11 +46,11 @@ const productSchema = new Schema(
       type: String,
       default: 'public/images/productsImages/defaultProductImage.png',
     },
-    // category: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Category',
-    //     required: true
-    // }, //make a relationship between Product and Category
+    categoryId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Category',
+        required: true
+    }, 
     quantity: {
       type: Number,
       required: true,

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { Users } from '../models/user';
+import { User } from '../models/user';
 import  Jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import { sendEmail } from '../services/emailServices';
@@ -19,7 +19,7 @@ const generateToken = (encodedData:any) => {
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const users = await Users.find();
+        const users = await User.find();
         res.status(200).send({
             message: 'Successfully retrieved all users.',
             users,
@@ -32,7 +32,7 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 export const getOneUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userName = req.params.userName; 
-        const user = await Users.findOne({userName});
+        const user = await User.findOne({userName});
         if (!user) {
             return res.status(404).send({
                 message: 'User not found.',
@@ -91,7 +91,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
 
   
 
-      const user = new Users(decodedToken)
+      const user = new User(decodedToken)
     await user.save()
   
       res.status(200).send({ message: 'User activated successfully.', user: decodedToken});
@@ -110,7 +110,7 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
     try {
         const user = req.params.userName; 
         const { name, userName, isAdmin, isBan } = req.body;
-        const updatedUser = await Users.findOneAndUpdate({user}, { name, userName, isAdmin, isBan }, { new: true });
+        const updatedUser = await User.findOneAndUpdate({user}, { name, userName, isAdmin, isBan }, { new: true });
         if (!updatedUser) {
             return res.status(404).send({
                 message: 'User not found.',
@@ -128,7 +128,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
     try {
         const {email,password} = req.body; 
         
-        const user = await Users.findOne({email});
+        const user = await User.findOne({email});
 
         if (!user || user.isBan) {
             return res.status(404).send({
@@ -168,7 +168,7 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
 export const updateBan = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userName = req.params.userName
-      const user = await Users.findOne({ userName: userName })
+      const user = await User.findOne({ userName: userName })
       if (!user) {
         throw ApiError.badRequest(404, 'User was not found')
       }
@@ -186,7 +186,7 @@ export const updateBan = async (req: Request, res: Response, next: NextFunction)
   export const deleteSingleUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userName = req.params.userName
-      const user = await Users.findOneAndDelete({ userName: userName })
+      const user = await User.findOneAndDelete({ userName: userName })
       if (!user) {
         throw ApiError.badRequest(404,`user not found with this user name ${userName}`)
       }
