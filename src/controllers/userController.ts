@@ -4,6 +4,7 @@ import  Jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import { sendEmail } from '../services/emailServices';
 import { dev } from '../config';
+import ApiError from '../errors/ApiError';
 
 
 
@@ -71,31 +72,38 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
 
 export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { token } = req.params;
-        interface user{
-            name?: String;
-            userName?: String;
-            isAdmin?: any;
-            isBan?: boolean;
-            image?: string | undefined;
-            email: String;
-            password: string;
+      const { token } = req.params;
+  
+      interface User {
+        name: string;
+        userName: string;
+        image?: string | undefined;
+        email: string;
+        password: string;
+      }
+  
+      const decodedToken = await Jwt.verify(token, dev.app.secret_key) ;
+      if (!decodedToken) {
+        throw ApiError.badRequest(403,'Token was invalid')
+      }
 
-        }
+  
 
-        const decodedToken = Jwt.verify(token, dev.app.secret_key) as user;
-        Users.create({name:decodedToken.name})     
-        res.status(200).send({ message: 'User activated successfully.', user: decodedToken });
-    } catch (error:any) {
-
-        if (error.name === 'TokenExpiredError') {
-            return res.status(400).send({ message: 'Activation token has expired. Please request a new one.' });
-        }
-
-        console.error('Error activating user:', error);
-        next(error);
+      const user = new Users(decodedToken)
+    await user.save()
+  
+      res.status(200).send({ message: 'User activated successfully.', user: decodedToken});
+    } catch (error: any) {
+      if (error.name === 'TokenExpiredError') {
+        return res.status(400).send({ message: 'Activation token has expired. Please request a new one.' });
+      }
+  
+      console.error('Error activating user:', error);
+      next(error);
     }
-};
+  };
+  
+  
 export const updateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const user = req.params.userName; 
@@ -145,6 +153,19 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         next(error);
     }
 };
+export const logoutUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        res.clearCookie('accessToken')
+        res.status(200).send({
+            message: 'User logout successfully.',
+           
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 
 
 
