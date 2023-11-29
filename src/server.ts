@@ -10,6 +10,7 @@ import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 import { createError } from './utility/createError'
 import cookieParser from 'cookie-parser'
+import { chatRoute } from './routers/chatRouter'
 
 config()
 const app: Application = express()
@@ -29,7 +30,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
-
+app.use('/api/chat',chatRoute)
 
 // app.use((req, res, next) => {
 //   const error = createError(404, 'Rout not found')
