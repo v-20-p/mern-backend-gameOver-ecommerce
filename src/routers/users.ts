@@ -19,7 +19,7 @@ router.post('/',uploadUserImg.single('image'),validateuser,runValidation,user.ne
 router.put('/:userName',user.updateUser)
 
 router.get('/user/activate/:token',user.activateUser)
-
+router.post('/login',user.loginUser)
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)
 //   if (!user) {

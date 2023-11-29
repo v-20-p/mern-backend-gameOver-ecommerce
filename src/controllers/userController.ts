@@ -3,6 +3,7 @@ import { Users } from '../models/user';
 import  Jwt  from 'jsonwebtoken';
 import bcrypt from 'bcrypt'
 import { sendEmail } from '../services/emailServices';
+import { dev } from '../config';
 
 
 
@@ -52,7 +53,7 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
         if (image){
             newUserBody={...newUserBody,image}
         }
-        const token = Jwt.sign(newUserBody,'d9fje3nf7y8hi9ygug8_8h2',{expiresIn:'10m'})
+        const token = Jwt.sign(newUserBody,dev.app.secret_key,{expiresIn:'10m'})
          sendEmail(newUserBody.email,'activate your acount',
         `<h1>hi , ${name}</h1>
         <p>you can activate your acount <a href='http://localhost:5050/users/activate/${token}' >hare</a></p>
@@ -71,9 +72,19 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
 export const activateUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { token } = req.params;
+        interface user{
+            name?: String;
+            userName?: String;
+            isAdmin?: any;
+            isBan?: boolean;
+            image?: string | undefined;
+            email: String;
+            password: string;
 
-        const decodedToken = Jwt.verify(token, 'd9fje3nf7y8hi9ygug8_8h2');
-        Users.create(decodedToken)     
+        }
+
+        const decodedToken = Jwt.verify(token, dev.app.secret_key) as user;
+        Users.create({name:decodedToken.name})     
         res.status(200).send({ message: 'User activated successfully.', user: decodedToken });
     } catch (error:any) {
 
@@ -103,3 +114,37 @@ export const updateUser = async (req: Request, res: Response, next: NextFunction
         next(error);
     }
 };
+export const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const {email,password} = req.body; 
+        
+        const user = await Users.findOne({email});
+
+        if (!user || user.isBan) {
+            return res.status(404).send({
+                message: 'User not found.',
+            });
+        }
+        const isPasswordMatch= await bcrypt.compare(password,user.password)
+        if(!isPasswordMatch){
+            next('not vaild password')
+        }
+        const accessToken=Jwt.sign({_id:user._id},dev.app.secret_key,{expiresIn:'5m'})
+        res.cookie('accessToken',accessToken,{
+            maxAge: 5*60*1000,
+            httpOnly:true,
+            sameSite:'none'
+        })
+
+
+        res.status(200).send({
+            message: 'User login successfully.',
+           
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+
