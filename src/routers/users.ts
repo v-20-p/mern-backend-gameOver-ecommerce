@@ -6,14 +6,14 @@ import * as user from '../controllers/userController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateuser } from '../middlewares/validator'
 import { uploadUserImg } from '../middlewares/uploadFile'
-import { isLoggedIn } from '../middlewares/auth'
+import { isAdmin, isLoggedIn } from '../middlewares/auth'
 
 const router = express.Router()
 
 router.get('/', user.getAllUsers)
 
 
-router.get('/:userName',isLoggedIn,user.getOneUser)
+router.get('/:userName',isLoggedIn,isAdmin,user.getOneUser)
 
 router.post('/',uploadUserImg.single('image'),validateuser,runValidation,user.newUser)
 

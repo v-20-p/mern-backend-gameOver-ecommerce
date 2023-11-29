@@ -11,7 +11,7 @@ import { deleteImage } from '../services/deleteImageService';
 
 
 const generateToken = (encodedData:any) => {
-  return Jwt.sign({ encodedData }, dev.app.secret_key, {
+  return Jwt.sign(encodedData , dev.app.secret_key, {
     expiresIn: '3h',
   })
 }
@@ -139,7 +139,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
         if(!isPasswordMatch){
             next('not vaild password')
         }
-        res.cookie('access_token', generateToken(String(user._id)), {
+        res.cookie('access_token', generateToken({_id:user._id}), {
             maxAge: 15 * 60 * 1000, //15 minutes
             httpOnly: true,
             sameSite: 'none',
@@ -151,6 +151,7 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
            
         });
     } catch (error) {
+      console.log(error)
         next(error);
     }
 };
