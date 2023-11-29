@@ -1,5 +1,5 @@
 import { check, param } from 'express-validator'
-import { Users } from '../models/user'
+import { User } from '../models/user'
 import Order from '../models/order'
 import order from '../models/order'
 import { Request } from 'express'
@@ -14,7 +14,7 @@ export const validateuser = [
         throw new Error('Username must not contain spaces')
       }
       // Check if the username is already in use
-      const existingUser = await Users.findOne({ userName: value })
+      const existingUser = await User.findOne({ userName: value })
       if (existingUser) {
         throw new Error('Username is already in use')
       }
@@ -27,23 +27,33 @@ export const validateuser = [
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),
 ]
-export const validateIdProduct = [check('id').isNumeric().withMessage('id must be a number')]
+//export const validateIdProduct = [check('id').isNumeric().withMessage('id must be a number')]
 
-export const validateProduct = [
-  check('name')
+export const validateCreateProduct = [
+  check('title')
     .notEmpty()
-    .withMessage('Product name is required')
+    .withMessage('Product title is required')
     .custom(async (value: string) => {
       // Check if the product is already in use
-      const existingProduct = await Product.findOne({ name: value })
+      const existingProduct = await Product.findOne({ title: value })
       if (existingProduct) {
-        throw new Error('There is already product with the same name')
+        throw new Error('There is already product with the same title')
       }
 
       return true
     }),
   check('price').notEmpty().withMessage('Price is required'),
   check('description').notEmpty().withMessage('Description is required'),
+  check('categoryId').notEmpty().withMessage('Category ID is required'),
+  check('quantity').notEmpty().withMessage('Quantity is required'),
+  check('shipping').notEmpty().withMessage('Shipping is required'),
+]
+
+export const validateUpdateProduct = [
+  check('title').notEmpty().withMessage('Product title is required'),
+  check('price').notEmpty().withMessage('Price is required'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('categoryId').notEmpty().withMessage('Category ID is required'),
   check('quantity').notEmpty().withMessage('Quantity is required'),
   check('shipping').notEmpty().withMessage('Shipping is required'),
 ]

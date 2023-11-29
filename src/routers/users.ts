@@ -13,11 +13,6 @@ router.get('/', user.getAllUsers)
 
 router.get('/:userName', user.getOneUser)
 
-router.post('/', validateuser, runValidation, user.newUser)
-
-
-router.get('/:userName',user.getOneUser)
-
 router.post('/',validateuser,runValidation,uploadUserImg.single('image'),user.newUser)
 
 router.put('/:userName',user.updateUser)

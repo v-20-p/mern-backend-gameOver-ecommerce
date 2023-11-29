@@ -1,5 +1,7 @@
 import express, { Application } from 'express'
 import mongoose from 'mongoose'
+import cookieParser from 'cookie-parser';
+
 import { config } from 'dotenv'
 import 'dotenv/config'
 import usersRouter from './routers/users'
@@ -8,12 +10,14 @@ import ordersRouter from './routers/orders'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
+import authenticationRouter from './routers/authenticationRoutes';
 
 config()
 const app: Application = express()
 const PORT = 5050
 const URL = process.env.MONGODB_URL as string
 
+app.use(cookieParser())
 app.use(myLogger)
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
@@ -26,6 +30,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
+app.use('/authentication', authenticationRouter)
 
 
 // app.use((req, res, next) => {
