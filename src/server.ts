@@ -8,6 +8,7 @@ import ordersRouter from './routers/orders'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
+import cookieParser from 'cookie-parser'
 
 config()
 const app: Application = express()
@@ -15,8 +16,9 @@ const PORT = 5050
 const URL = process.env.MONGODB_URL as string
 
 app.use(myLogger)
-app.use(express.urlencoded({ extended: true }))
-app.use(express.json())
+app.use(express.urlencoded({ extended: true })),
+app.use(express.json()),
+app.use(cookieParser())
 
 app.get('/', (req, res) => {
   res.send('healthe checkup')
