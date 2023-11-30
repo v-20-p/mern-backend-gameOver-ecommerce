@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
-import Order from '../models/order'
-import {Product} from '../models/productsSchema'
+import Order from '../models/ordersSchema'
+import { Product } from '../models/productsSchema'
+import order from '../models/ordersSchema'
 
 export const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { name, user, products } = req.body
+    const { status, user, products } = req.body
     let totalPriceOfItems = 0
     for (let item = 0; item < products.length; item++) {
       const { product, quantity } = products[item]
@@ -28,10 +29,9 @@ export const placeOrder = async (req: Request, res: Response, next: NextFunction
 
     // Create a new order
     const order = new Order({
-      name,
+      status,
       user,
       products: products,
-      slug: slugify(name),
       totalPriceOfOrder: totalPriceOfItems,
     })
 
@@ -60,16 +60,14 @@ export const placeOrder = async (req: Request, res: Response, next: NextFunction
 }
 
 export const getAllOrders = async (req: Request, res: Response, next: NextFunction) => {
-
-  try{
+  try {
     const orders = await Order.find().populate('products.product')
-    if(!orders){
-      return res.status(404).send({ message: 'list of Orders not found' });
+    if (!orders) {
+      return res.status(404).send({ message: 'list of Orders not found' })
     }
     res.status(201).json(orders)
-
-  }catch(error){
-next(error)
+  } catch (error) {
+    next(error)
   }
 }
 
@@ -85,6 +83,18 @@ export const deleteOrderById = async (req: Request, res: Response, next: NextFun
   try {
     const order = await Order.findOneAndDelete({ _id: req.params.orderId })
     res.status(201).send({ message: 'deleted a single order', payload: order })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateOrderById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const order = await Order.findOneAndUpdate({ _id: req.params.orderId }, req.body, { new: true })
+    if (!order) {
+      throw new Error('Order not found with this ID')
+    }
+    res.send({ message: 'update a single product ', payload: order })
   } catch (error) {
     next(error)
   }

@@ -4,7 +4,7 @@ import { config } from 'dotenv'
 import 'dotenv/config'
 import usersRouter from './routers/users'
 import productsRouter from './routers/productsRouter'
-import ordersRouter from './routers/orders'
+import ordersRouter from './routers/ordersRouter'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
@@ -17,17 +17,15 @@ const URL = process.env.MONGODB_URL as string
 
 app.use(myLogger)
 app.use(express.urlencoded({ extended: true })),
-app.use(express.json()),
-
-app.get('/', (req, res) => {
-  res.send('healthe checkup')
-})
+  app.use(express.json()),
+  app.get('/', (req, res) => {
+    res.send('healthe checkup')
+  })
 
 app.use('/api/users', usersRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
-
 
 // app.use((req, res, next) => {
 //   const error = createError(404, 'Rout not found')
@@ -41,7 +39,7 @@ mongoose
   .then(() => {
     console.log('Database connected')
   })
-  .catch((err:Error) => {
+  .catch((err: Error) => {
     console.log('MongoDB connection error, ', err)
   })
 
@@ -49,4 +47,3 @@ app.listen(PORT, () => {
   console.log(`Server running http://localhost:${PORT}`)
 })
 //app.use(apiErrorHandler)
-
