@@ -4,9 +4,11 @@ import Order from '../models/order'
 import order from '../models/order'
 import { Request } from 'express'
 import { Product } from '../models/productsSchema'
+import { Category } from '../models/category'
 
 export const validateuser = [
-  check('userName').optional()
+  check('userName')
+    .optional()
     .notEmpty()
     .withMessage('Username must not be empty')
     .custom(async (value: string) => {
@@ -64,6 +66,20 @@ export const validateIdOrder = [
         throw new Error('Order not found with this ID')
       }
 
+      return true
+    }),
+]
+
+export const validateCategory = [
+  check('title')
+    .notEmpty()
+    .withMessage('Category title is required')
+    .custom(async (value: string) => {
+      // Check if the category is already in use
+      const existingCategory = await Category.findOne({ title: value })
+      if (existingCategory) {
+        throw new Error('There is already category with the same title')
+      }
       return true
     }),
 ]
