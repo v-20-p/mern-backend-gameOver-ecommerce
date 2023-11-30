@@ -6,7 +6,8 @@ import { Request } from 'express'
 import { Product } from '../models/productsSchema'
 
 export const validateuser = [
-  check('userName').optional()
+  check('userName')
+    .optional()
     .notEmpty()
     .withMessage('Username must not be empty')
     .custom(async (value: string) => {
@@ -27,23 +28,33 @@ export const validateuser = [
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),
 ]
-export const validateIdProduct = [check('id').isNumeric().withMessage('id must be a number')]
+//export const validateIdProduct = [check('id').isNumeric().withMessage('id must be a number')]
 
-export const validateProduct = [
-  check('name')
+export const validateCreateProduct = [
+  check('title')
     .notEmpty()
-    .withMessage('Product name is required')
+    .withMessage('Product title is required')
     .custom(async (value: string) => {
       // Check if the product is already in use
-      const existingProduct = await Product.findOne({ name: value })
+      const existingProduct = await Product.findOne({ title: value })
       if (existingProduct) {
-        throw new Error('There is already product with the same name')
+        throw new Error('There is already product with the same title')
       }
 
       return true
     }),
   check('price').notEmpty().withMessage('Price is required'),
   check('description').notEmpty().withMessage('Description is required'),
+  check('categoryId').notEmpty().withMessage('Category ID is required'),
+  check('quantity').notEmpty().withMessage('Quantity is required'),
+  check('shipping').notEmpty().withMessage('Shipping is required'),
+]
+
+export const validateUpdateProduct = [
+  check('title').notEmpty().withMessage('Product title is required'),
+  check('price').notEmpty().withMessage('Price is required'),
+  check('description').notEmpty().withMessage('Description is required'),
+  check('categoryId').notEmpty().withMessage('Category ID is required'),
   check('quantity').notEmpty().withMessage('Quantity is required'),
   check('shipping').notEmpty().withMessage('Shipping is required'),
 ]
