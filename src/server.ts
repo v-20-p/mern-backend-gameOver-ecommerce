@@ -4,7 +4,7 @@ import { config } from 'dotenv'
 import 'dotenv/config'
 import usersRouter from './routers/users'
 import productsRouter from './routers/productsRouter'
-import ordersRouter from './routers/orders'
+import ordersRouter from './routers/ordersRouter'
 import categoreisRouter from './routers/categories'
 import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
@@ -44,7 +44,7 @@ mongoose
   .then(() => {
     console.log('Database connected')
   })
-  .catch((err:Error) => {
+  .catch((err: Error) => {
     console.log('MongoDB connection error, ', err)
   })
 
@@ -52,4 +52,3 @@ app.listen(PORT, () => {
   console.log(`Server running http://localhost:${PORT}`)
 })
 //app.use(apiErrorHandler)
-

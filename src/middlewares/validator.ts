@@ -1,7 +1,7 @@
 import { check, param } from 'express-validator'
 import { Users } from '../models/user'
-import Order from '../models/order'
-import order from '../models/order'
+import Order from '../models/ordersSchema'
+import order from '../models/ordersSchema'
 import { Request } from 'express'
 import { Product } from '../models/productsSchema'
 
