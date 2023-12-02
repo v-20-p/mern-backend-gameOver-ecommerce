@@ -1,14 +1,12 @@
 import { check, param } from 'express-validator'
-import { Users } from '../models/user'
+
+import { Users } from '../models/usersSchema'
 import Order from '../models/ordersSchema'
-import order from '../models/ordersSchema'
-import { Request } from 'express'
 import { Product } from '../models/productsSchema'
 import { Category } from '../models/category'
 
 export const validateuser = [
   check('userName')
-    .optional()
     .notEmpty()
     .withMessage('Username must not be empty')
     .custom(async (value: string) => {
@@ -23,9 +21,9 @@ export const validateuser = [
 
       return true
     }),
-  check('password').optional().notEmpty().withMessage('password is required'),
-  check('email').optional().notEmpty().isEmail().withMessage('invalid email'),
-  check('name').optional().notEmpty().withMessage('Name is required'),
+  check('password').notEmpty().withMessage('password is required'),
+  check('email').notEmpty().isEmail().withMessage('invalid email'),
+  check('name').notEmpty().withMessage('Name is required'),
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),
 ]

@@ -2,9 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 
 import { CustomRequest } from '../middlewares/auth'
 import ApiError from '../errors/ApiError'
-import { Users } from '../models/user'
+import { Users } from '../models/usersSchema'
 import { handleUserMessage } from '../openaiIntegration'
-import { Chat } from '../models/chat'
+import { Chat } from '../models/chatSchema'
 
 export const sendMessage = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {

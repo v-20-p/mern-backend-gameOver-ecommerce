@@ -2,7 +2,7 @@ import express, { Application } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
 import 'dotenv/config'
-import usersRouter from './routers/users'
+import usersRouter from './routers/usersRouter'
 import productsRouter from './routers/productsRouter'
 import ordersRouter from './routers/ordersRouter'
 import categoreisRouter from './routers/categories'
@@ -11,6 +11,7 @@ import myLogger from './middlewares/logger'
 import { createError } from './utility/createError'
 import cookieParser from 'cookie-parser'
 import { chatRoute } from './routers/chatRouter'
+import ApiError from './errors/ApiError'
 
 config()
 const app: Application = express()
@@ -32,11 +33,10 @@ app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
 app.use('/api/chat',chatRoute)
 
-// app.use((req, res, next) => {
-//   const error = createError(404, 'Rout not found')
-//   next(error)
-// })
-
+app.use((req, res, next) => {
+  if (!req.route)
+  return next(ApiError.badRequest(404, 'Rout not found'))
+})
 app.use(apiErrorHandler)
 
 mongoose
