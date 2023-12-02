@@ -19,7 +19,7 @@ router.put('/:id' , isLoggedIn,user.updateUser)
 
 router.put("/user/ban/:id",isLoggedIn,isAdmin,user.updateBan)
 
-router.put("/user/delete/:id",isLoggedIn,isAdmin,user.deleteSingleUser)
+router.delete("/user/delete/:id",isLoggedIn,isAdmin,user.deleteSingleUser)
 
 router.get('/user/activate/:token',user.activateUser)
 
