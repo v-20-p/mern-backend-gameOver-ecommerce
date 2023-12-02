@@ -6,12 +6,14 @@ import {
   getAllCategories,
   updateCategoryBySlug,
 } from '../controllers/categoryController'
+import { validateCategory } from '../middlewares/validator'
+import { runValidation } from '../middlewares/runVaildator'
 
 const router = express.Router()
 
 router.get('/', getAllCategories)
-router.post('/', createCategory)
-router.put('/:slug', updateCategoryBySlug)
-router.delete('/:slug', deletCategoryBySlug)
+router.post('/', createCategory, validateCategory, runValidation)
+router.put('/:slug', updateCategoryBySlug, validateCategory, runValidation)
+router.delete('/:slug', deletCategoryBySlug, validateCategory, runValidation)
 
 export default router
