@@ -7,16 +7,7 @@ export type OrderDocument = Document & {
 
 const orderSchema = new mongoose.Schema(
   {
-    name: {
-      type: String,
-      required: true,
-    },
-    slug: {
-      type: String,
-      unique: true,
-      lowercase: true,
-    },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'Client' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'Users' },
 
     products: [
       {
@@ -30,9 +21,13 @@ const orderSchema = new mongoose.Schema(
         },
       },
     ],
-    totalPriceOfOrder:{
+    totalPriceOfOrder: {
       type: Number,
       default: 0,
+    },
+    status: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }
