@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 
 import { CustomRequest } from '../middlewares/auth'
 import ApiError from '../errors/ApiError'
-import { Users } from '../models/user'
+import { Users } from '../models/userSchema'
 import { handleUserMessage } from '../openaiIntegration'
 import { Chat } from '../models/chat'
 

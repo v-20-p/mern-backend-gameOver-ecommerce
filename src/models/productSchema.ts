@@ -1,5 +1,6 @@
-import { Schema, model, Document } from 'mongoose'
-import { CategoryInterface } from './category'
+import { Document, Schema, model } from 'mongoose'
+
+import { CategoryInterface } from './categorySchema'
 
 export interface ProductInterface extends Document {
   id: string
@@ -12,8 +13,16 @@ export interface ProductInterface extends Document {
   quantity: number
   sold: number
   shipping: number
+  discounts: DiscountInterface[]
   createdAt?: string
   updatedAt?: string
+}
+
+export interface DiscountInterface {
+  type: 'percentage' | 'fixed'
+  value: number
+  start: Date
+  end: Date
 }
 
 const productSchema = new Schema(
@@ -65,6 +74,14 @@ const productSchema = new Schema(
       type: Number,
       default: 0,
     },
+    discounts: [
+      {
+        type: { type: String, enum: ['percentage', 'fixed'] },
+        value: Number,
+        start: Date,
+        end: Date,
+      },
+    ],
   },
   {
     timestamps: true,

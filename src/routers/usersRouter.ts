@@ -2,7 +2,7 @@ import express from 'express'
 
 // import ApiError from '../errors/ApiError'
 // import {Users} from '../models/user'
-import * as user from '../controllers/userController'
+import * as user from '../controllers/usersController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateuser } from '../middlewares/validator'
 import { uploadUserImg } from '../middlewares/uploadFile'
@@ -12,17 +12,16 @@ const router = express.Router()
 
 router.get('/', user.getAllUsers)
 
+router.get('/:userName', isLoggedIn, isAdmin, user.getOneUser)
 
-router.get('/:userName',isLoggedIn,isAdmin,user.getOneUser)
+router.post('/', uploadUserImg.single('image'), validateuser, runValidation, user.newUser)
 
-router.post('/',uploadUserImg.single('image'),validateuser,runValidation,user.newUser)
+router.put('/:userName', isLoggedIn, user.updateUser)
 
-router.put('/:userName' , isLoggedIn,user.updateUser)
+router.get('/user/activate/:token', user.activateUser)
 
-router.get('/user/activate/:token',user.activateUser)
-
-router.post('/login',user.loginUser)
-router.post('/logout', isLoggedIn,user.logoutUser)
+router.post('/login', user.loginUser)
+router.post('/logout', isLoggedIn, user.logoutUser)
 // router.param('userId', (req, res, next, userId) => {
 //   const user = users.find((user) => user.id === userId)
 //   if (!user) {

@@ -1,6 +1,6 @@
 // openaiIntegration.js
 import { OpenAI } from 'openai';
-import { Product } from './models/productsSchema';
+import { Product } from './models/productSchema';
 import { dev } from './config';
 
 const OPENAI_API_KEY = `${dev.app.chatbot.apiKey}`; 

@@ -1,4 +1,4 @@
-import { Category, categorySchema } from './../models/category'
+import { Category, categorySchema } from '../models/categorySchema'
 import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
 import { createHttpError } from '../util/creatHttpError'

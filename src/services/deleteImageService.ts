@@ -2,8 +2,8 @@ import fs from 'fs/promises'
 
 export const deleteImage = async (imagePath: string) => {
   try {
-    if(imagePath==''){
-        return ;
+    if (imagePath == '') {
+      return
     }
     await fs.unlink(imagePath)
     console.log('Image is deleted from server')
