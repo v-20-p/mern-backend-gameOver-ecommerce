@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import bcrypt from 'bcrypt'
+
 const userSchema = new mongoose.Schema({
   userName: {
     type: String,
@@ -17,7 +17,6 @@ const userSchema = new mongoose.Schema({
   password:{
     type:String,
     required: true,
-    // set:(password:string)=>bcrypt.hash(password,8)
   },
   image:{
     type:String,

@@ -9,3 +9,8 @@ export type CategoryType = {
 }
 
 export type CategoryInput = Omit<CategoryType, 'title'>
+
+export interface ErrorInterface {
+  status?: number
+  message?: string
+}

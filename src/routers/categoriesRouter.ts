@@ -1,11 +1,11 @@
-import { Category } from './../models/category'
+import { Category } from '../models/categorySchema'
 import express from 'express'
 import {
   createCategory,
   deletCategoryBySlug,
   getAllCategories,
   updateCategoryBySlug,
-} from '../controllers/categoryController'
+} from '../controllers/categoriesController'
 import { validateCategory } from '../middlewares/validator'
 import { runValidation } from '../middlewares/runVaildator'
 

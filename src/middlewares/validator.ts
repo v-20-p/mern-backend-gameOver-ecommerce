@@ -1,9 +1,8 @@
 import { check, param } from 'express-validator'
-
-import { Users } from '../models/usersSchema'
-import Order from '../models/ordersSchema'
-import { Product } from '../models/productsSchema'
-import { Category } from '../models/category'
+import { Users } from '../models/userSchema'
+import Order from '../models/orderSchema'
+import { Product } from '../models/productSchema'
+import { Category } from '../models/categorySchema'
 
 export const validateuser = [
   check('userName')
@@ -27,12 +26,13 @@ export const validateuser = [
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),
 ]
-//export const validateIdProduct = [check('id').isNumeric().withMessage('id must be a number')]
 
 export const validateCreateProduct = [
   check('title')
     .notEmpty()
     .withMessage('Product title is required')
+    .isLength({min: 3, max: 50})
+    .withMessage('Product title must be 3-50 characters')
     .custom(async (value: string) => {
       // Check if the product is already in use
       const existingProduct = await Product.findOne({ title: value })
@@ -50,12 +50,21 @@ export const validateCreateProduct = [
 ]
 
 export const validateUpdateProduct = [
-  check('title').notEmpty().withMessage('Product title is required'),
+  check('title').notEmpty().withMessage('Product title is required').isLength({min: 3, max: 50})
+  .withMessage('Product title must be 3-50 characters'),
   check('price').notEmpty().withMessage('Price is required'),
   check('description').notEmpty().withMessage('Description is required'),
   check('categoryId').notEmpty().withMessage('Category ID is required'),
   check('quantity').notEmpty().withMessage('Quantity is required'),
   check('shipping').notEmpty().withMessage('Shipping is required'),
+]
+
+export const validateDiscount = [
+  check('type').notEmpty().withMessage('Please provide type of discount (percentage or fixed)').isIn(['percentage', 'fixed'])
+  .withMessage('Please provide a vlaid discount type'),
+  check('value').notEmpty().withMessage('Discount value is required'),
+  check('start').notEmpty().withMessage('Start date is required'),
+  check('end').notEmpty().withMessage('End date is required'),
 ]
 
 export const validateIdOrder = [
@@ -83,7 +92,7 @@ export const validateCategory = [
     .notEmpty()
     .withMessage('Category title is required')
     .custom(async (value: string) => {
-      // Check if the category is already in use
+      // Check if the category exists or not
       const existingCategory = await Category.findOne({ title: value })
       if (existingCategory) {
         throw new Error('There is already category with the same title')

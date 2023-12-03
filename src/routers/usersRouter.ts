@@ -1,6 +1,6 @@
 import express from 'express'
 
-import * as user from '../controllers/userController'
+import * as user from '../controllers/usersController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateuser } from '../middlewares/validator'
 import { uploadUserImg } from '../middlewares/uploadFile'

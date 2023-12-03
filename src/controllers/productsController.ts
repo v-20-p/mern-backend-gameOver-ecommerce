@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
 import slugify from 'slugify'
 
-import { Product, ProductInterface } from '../models/productsSchema'
 import ApiError from '../errors/ApiError'
+import { Product, ProductInterface } from '../models/productSchema'
 import { deleteImage } from '../services/deleteImageService'
+import { discount } from '../services/discountService'
 
 const successResponse = (res: Response, statusCode = 200, message = 'Successful', payload = {}) => {
   res.status(statusCode).send({
@@ -50,20 +51,17 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
     const products: ProductInterface[] = await Product.find(filter)
       .skip(skip)
       .limit(limit)
-      .sort({ price: +1 })
+      .sort({ price: 1 })
       .populate('categoryId')
 
     if (products.length === 0) {
       throw new ApiError(404, 'No products found')
     }
 
-    res.status(200).send({
-      message: 'Return all products',
-      payload: {
-        products,
-        totalPages,
-        currentPage: page,
-      },
+    successResponse(res, 200, 'Return all products', {
+      products,
+      totalPages,
+      currentPage: page,
     })
   } catch (error) {
     next(error)
@@ -78,6 +76,7 @@ export const getSingleProductBySlug = async (req: Request, res: Response, next: 
       throw new ApiError(404, `No product found with this slug ${slug}`)
     }
 
+    await discount(product)
     successResponse(res, 200, 'Single product is rendered', product)
   } catch (error) {
     next(error)
@@ -105,6 +104,7 @@ export const createProduct = async (req: Request, res: Response, next: NextFunct
     successResponse(res, 201, 'New product is created', newProduct)
   } catch (error) {
     next(error)
+    console.log(error)
   }
 }
 
@@ -138,15 +138,65 @@ export const updateProduct = async (req: Request, res: Response, next: NextFunct
 
     const id = req.params.id
     const updatedProductData = { ...req.body, image: req.file?.path }
-    console.log(updatedProductData)
 
     const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true })
 
     if (updatedProduct) {
       successResponse(res, 200, `Product ${id} is updated`, updatedProduct)
     } else {
-      throw new ApiError(404, `No product found with this id ${IDBObjectStore}`)
+      throw new ApiError(404, `No product found with this id ${id}`)
     }
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateProductDiscount = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { type, value, start, end } = req.body
+    const id = req.params.id
+
+    const startDate = new Date(`${start}T00:00:00.000Z`)
+    const endDate = new Date(`${end}T23:59:59.999Z`)
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          discounts: {
+            type,
+            value,
+            start: startDate,
+            end: endDate,
+          },
+        },
+      },
+      { new: true }
+    )
+
+    if (!updatedProduct) {
+      throw new ApiError(404, `No product found with this id ${id}`)
+    }
+
+    successResponse(res, 200, 'Discount updated successfully', updatedProduct)
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getDiscountedProducts = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const products: ProductInterface[] = await Product.find().populate('categoryId')
+
+    if (products.length === 0) {
+      throw new ApiError(404, 'No products found')
+    }
+
+    products.forEach(async (product) => {
+      await discount(product)
+    })
+
+    successResponse(res, 200, 'All products with discount are rendered', products)
   } catch (error) {
     next(error)
   }

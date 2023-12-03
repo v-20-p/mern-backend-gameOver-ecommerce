@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import { Users } from '../models/usersSchema'
+import { Users } from '../models/userSchema'
 import Jwt, { JwtPayload } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { sendEmail } from '../services/emailServices'

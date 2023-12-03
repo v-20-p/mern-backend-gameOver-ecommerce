@@ -6,7 +6,7 @@ import {
   getOrderById,
   placeOrder,
   updateOrderById,
-} from '../controllers/orderController'
+} from '../controllers/ordersController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateIdOrder } from '../middlewares/validator'
 

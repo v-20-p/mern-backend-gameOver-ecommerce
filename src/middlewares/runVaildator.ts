@@ -7,7 +7,7 @@ export const runValidation = (req: Request, res: Response, next: NextFunction) =
   if (!errors.isEmpty()) {
     console.log(errors)
 
-    let errList=errors.array().map(((err:{msg:string})=>err.msg))
+    let errList = errors.array().map((err: { msg: string }) => err.msg)
 
     return res.status(422).send({
       message: errList[0],

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import ApiError from '../errors/ApiError'
-import { Users } from '../models/usersSchema'
+import { Users } from '../models/userSchema'
 import { dev } from '../config'
 import Jwt, { JwtPayload } from 'jsonwebtoken'
 
