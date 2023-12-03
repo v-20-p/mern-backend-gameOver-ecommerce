@@ -1,6 +1,7 @@
 import express, { Application } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
+
 import 'dotenv/config'
 import usersRouter from './routers/usersRouter'
 import productsRouter from './routers/productsRouter'

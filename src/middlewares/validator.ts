@@ -1,13 +1,11 @@
 import { check, param } from 'express-validator'
 import { Users } from '../models/userSchema'
 import Order from '../models/orderSchema'
-import order from '../models/orderSchema'
-import { Request } from 'express'
 import { Product } from '../models/productSchema'
+import { Category } from '../models/categorySchema'
 
 export const validateuser = [
   check('userName')
-    .optional()
     .notEmpty()
     .withMessage('Username must not be empty')
     .custom(async (value: string) => {
@@ -22,9 +20,9 @@ export const validateuser = [
 
       return true
     }),
-  check('password').optional().notEmpty().withMessage('password is required'),
-  check('email').optional().notEmpty().isEmail().withMessage('invalid email'),
-  check('name').optional().notEmpty().withMessage('Name is required'),
+  check('password').notEmpty().withMessage('password is required'),
+  check('email').notEmpty().isEmail().withMessage('invalid email'),
+  check('name').notEmpty().withMessage('Name is required'),
   check('isAdmin').optional().isBoolean().withMessage('isAdmin must be a boolean'),
   check('isBan').optional().isBoolean().withMessage('isBan must be a boolean'),
 ]
@@ -85,6 +83,20 @@ export const validateIdOrder = [
         throw new Error('Order not found with this ID')
       }
 
+      return true
+    }),
+]
+
+export const validateCategory = [
+  check('title')
+    .notEmpty()
+    .withMessage('Category title is required')
+    .custom(async (value: string) => {
+      // Check if the category exists or not
+      const existingCategory = await Category.findOne({ title: value })
+      if (existingCategory) {
+        throw new Error('There is already category with the same title')
+      }
       return true
     }),
 ]

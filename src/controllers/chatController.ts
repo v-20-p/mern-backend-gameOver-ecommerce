@@ -4,7 +4,7 @@ import { CustomRequest } from '../middlewares/auth'
 import ApiError from '../errors/ApiError'
 import { Users } from '../models/userSchema'
 import { handleUserMessage } from '../openaiIntegration'
-import { Chat } from '../models/chat'
+import { Chat } from '../models/chatSchema'
 
 export const sendMessage = async (req: CustomRequest, res: Response, next: NextFunction) => {
   try {
