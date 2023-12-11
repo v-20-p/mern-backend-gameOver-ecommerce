@@ -1,8 +1,11 @@
 import { NextFunction, Request, Response } from 'express'
+import Jwt, { JwtPayload } from 'jsonwebtoken'
+
+
 import ApiError from '../errors/ApiError'
 import { Users } from '../models/userSchema'
 import { dev } from '../config'
-import Jwt, { JwtPayload } from 'jsonwebtoken'
+
 
 export interface CustomRequest extends Request {
   userId?: string
@@ -50,6 +53,7 @@ export const isAdmin = async (req: CustomRequest, res: Response, next: NextFunct
     const user = await Users.findById(req.userId)
 
     if (user && user.isAdmin) {
+      console.log("admin")
       next()
     } else {
       throw ApiError.badRequest(403, `You are not an admin `)

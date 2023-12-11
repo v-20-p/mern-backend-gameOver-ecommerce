@@ -9,6 +9,7 @@ import {
 } from '../controllers/ordersController'
 import { runValidation } from '../middlewares/runVaildator'
 import { validateIdOrder } from '../middlewares/validator'
+import { isAdmin, isLoggedIn } from '../middlewares/auth'
 
 const router = express.Router()
 
@@ -25,6 +26,6 @@ router.get('/:orderId', validateIdOrder, runValidation, getOrderById)
 router.put('/:orderId', validateIdOrder, runValidation, updateOrderById)
 
 //DELETE: /api/orders:orderId -> delete single order by Id
-router.delete('/:orderId', validateIdOrder, runValidation, deleteOrderById)
+router.delete('/:orderId', isLoggedIn,isAdmin ,validateIdOrder, runValidation, deleteOrderById)
 
 export default router

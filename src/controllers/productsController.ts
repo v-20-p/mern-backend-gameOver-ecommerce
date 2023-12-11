@@ -62,6 +62,7 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
       products,
       totalPages,
       currentPage: page,
+      totalProducts:count
     })
   } catch (error) {
     next(error)

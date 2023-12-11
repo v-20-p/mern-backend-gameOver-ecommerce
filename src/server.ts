@@ -1,6 +1,7 @@
 import express, { Application } from 'express'
 import mongoose from 'mongoose'
 import { config } from 'dotenv'
+import cors from "cors"
 
 import 'dotenv/config'
 import usersRouter from './routers/usersRouter'
@@ -11,6 +12,7 @@ import apiErrorHandler from './middlewares/errorHandler'
 import myLogger from './middlewares/logger'
 import cookieParser from 'cookie-parser'
 import { chatRoute } from './routers/chatRouter'
+import ApiError from './errors/ApiError'
 
 config()
 const app: Application = express()
@@ -30,6 +32,12 @@ app.use('/api/products', productsRouter)
 app.use('/api/categories', categoreisRouter)
 app.use('/api/chat', chatRoute)
 
+app.use(cors())
+
+app.use((req, res, next) => {
+  if (!req.route)
+  return next(ApiError.badRequest(404, 'Rout not found'))
+})
 app.use(apiErrorHandler)
 
 mongoose
