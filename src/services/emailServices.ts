@@ -4,7 +4,7 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true,
   auth: {
-    // TODO: replace `user` and `pass` values from <https://forwardemail.net>
+
     user: 'sda.ecommerce.bootcamp@gmail.com',
     pass: `${process.env.email_password}`,
   },
@@ -17,8 +17,6 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
       subject: subject,
       html: html,
     })
-
-    console.log('Email sent:', info.response)
     return info
   } catch (error) {
     console.error('Error sending email:', error)
