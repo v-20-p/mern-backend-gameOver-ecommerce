@@ -56,7 +56,7 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
       isBan,
       image,
       email,
-      password: await bcrypt.hash(password, 7),
+      password: await bcrypt.hash(password, 3),
     }
     if (image) {
       newUserBody = { ...newUserBody, image }
@@ -66,7 +66,7 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
       newUserBody.email,
       'activate your acount',
       `<h1>hi , ${name}</h1>
-        <p>you can activate your acount <a href='http://localhost:5050/users/activate/${token}' >hare</a></p>
+        <p>you can activate your acount <a href='/users/activate/${token}' >hare</a></p>
         <br>
         <p>if is not you please ignore this message</p>
         `
