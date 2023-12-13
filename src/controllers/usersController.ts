@@ -70,11 +70,16 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
         <br>
         <p>if is not you please ignore this message</p>
         `
-    )
-    res.status(201).send({
-      message: 'User created successfully.',
-      token,
+    ).then(() => {
+      res.status(201).send({
+        message: 'User created successfully.',
+        token,
+      })
     })
+    .catch((error) => {
+      throw ApiError.badRequest(403, 'time out')
+    });
+
   } catch (error) {
     next(error)
   }
