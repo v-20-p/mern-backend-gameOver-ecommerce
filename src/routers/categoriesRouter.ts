@@ -13,7 +13,7 @@ import { isAdmin, isLoggedIn } from '../middlewares/auth'
 const router = express.Router()
 
 router.get('/', getAllCategories)
-router.post('/', isLoggedIn,isAdmin ,createCategory, validateCategory, runValidation)
+router.post('/' ,createCategory, validateCategory, runValidation)
 router.put('/:slug',isLoggedIn,isAdmin , updateCategoryBySlug, validateCategory, runValidation)
 router.delete('/:slug',isLoggedIn,isAdmin , deletCategoryBySlug, validateCategory, runValidation)
 
