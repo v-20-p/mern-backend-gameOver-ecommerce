@@ -6,9 +6,11 @@ import { Product } from '../models/productSchema'
 export const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { status, user, products } = req.body
+    console.log(req.body)
     let totalPriceOfItems = 0
     for (let item = 0; item < products.length; item++) {
       const { product, quantity } = products[item]
+      
 
       const productInfo = await Product.findById(product)
 
@@ -64,7 +66,7 @@ export const getAllOrders = async (req: Request, res: Response, next: NextFuncti
     if (!orders) {
       return res.status(404).send({ message: 'list of Orders not found' })
     }
-    res.status(201).json(orders)
+    res.status(201).json({orders:orders})
   } catch (error) {
     next(error)
   }

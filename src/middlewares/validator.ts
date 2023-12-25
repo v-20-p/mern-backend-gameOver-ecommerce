@@ -46,7 +46,6 @@ export const validateCreateProduct = [
   check('description').notEmpty().withMessage('Description is required'),
   check('categoryId').notEmpty().withMessage('Category ID is required'),
   check('quantity').notEmpty().withMessage('Quantity is required'),
-  check('shipping').notEmpty().withMessage('Shipping is required'),
 ]
 
 export const validateUpdateProduct = [

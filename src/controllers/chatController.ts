@@ -44,7 +44,7 @@ export const getAllmessageOfUser = async (
 ) => {
   try {
     if (!req.userId) {
-      throw ApiError.badRequest(401, 'User ID is missing')
+      throw ApiError.badRequest(401, 'you must login first ')
     }
 
     const userChat = await Chat.findOne({ user: req.userId })

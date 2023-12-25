@@ -5,6 +5,8 @@ import ApiError from '../errors/ApiError'
 import { Product, ProductInterface } from '../models/productSchema'
 import { deleteImage } from '../services/deleteImageService'
 import { discount } from '../services/discountService'
+import { deleteFromCloudinary, uploadToCloudinary, valueWithoutExtension } from '../services/cloudirnaryServeice'
+import { baseURL } from '../config'
 
 const successResponse = (res: Response, statusCode = 200, message = 'Successful', payload = {}) => {
   res.status(statusCode).send({
@@ -15,59 +17,66 @@ const successResponse = (res: Response, statusCode = 200, message = 'Successful'
 
 export const getAllProducts = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    //pagenation
-    let page = Number(req.query.page) || 1
-    const limit = Number(req.query.limit) || 10
+    // Pagination
+    let page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || await Product.countDocuments();
 
-    //products search
-    const search = (req.query.search as string) || ''
-    const searchRegExp = new RegExp('.*' + search + '.*', 'i')
+    // Products search
+    const search = (req.query.search as string) || '';
+    const searchRegExp = new RegExp('.*' + search + '.*', 'i');
 
-    //products filter
-    const categoryFilter = req.query.filter || ''
+    // Products filter
+    let categoryFilter = req.query.filter || '';
+    
+    if (String(categoryFilter).includes(',')) {
+      categoryFilter = String(req.query.filter).split(',');
+    }
 
-    let filter = {}
+    let filter = {};
     categoryFilter
       ? (filter = {
-          categoryId: { $eq: categoryFilter },
+          categoryId: { $in: categoryFilter },
           $or: [{ title: { $regex: searchRegExp } }, { description: { $regex: searchRegExp } }],
         })
       : (filter = {
           $or: [{ title: { $regex: searchRegExp } }, { description: { $regex: searchRegExp } }],
-        })
+        });
 
-    const count = await Product.countDocuments()
-    if (count <= 0) {
-      throw new ApiError(404, 'No products found')
-    }
+    // Sorting
+    let sort = {};
+    const sortOption = req.query.sort as string;
+    if (sortOption === 'title') {
+      sort = { title: 1 };
+    } else if (sortOption === 'price') {
+      sort = { price: 1 };
+    } 
 
-    const totalPages = Math.ceil(count / limit)
+   
+    const count = await Product.countDocuments(filter);
+
+    const totalPages = Math.ceil(count / limit);
     if (page > totalPages) {
-      page = totalPages
+      page = totalPages;
     }
 
-    const skip = (page - 1) * limit
+    const skip = (page - 1) * limit;
 
     const products: ProductInterface[] = await Product.find(filter)
+      .sort(sort)
       .skip(skip)
       .limit(limit)
-      .sort({ price: 1 })
-      .populate('categoryId')
-
-    if (products.length === 0) {
-      throw new ApiError(404, 'No products found')
-    }
+      .populate('categoryId');
 
     successResponse(res, 200, 'Return all products', {
       products,
       totalPages,
       currentPage: page,
-      totalProducts:count
-    })
+      totalProducts: count,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 export const getSingleProductBySlug = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -87,18 +96,24 @@ export const getSingleProductBySlug = async (req: Request, res: Response, next: 
 export const createProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { title, price, description, categoryId, quantity, sold, shipping } = req.body
+    let image=  req.file?.path
+    if (req.file) {
+      image = await uploadToCloudinary(req.file.path, 'sda-ecommerce/productsImage');
+    }
+
 
     const newProduct: ProductInterface = new Product({
       title,
       slug: slugify(title),
       price,
       description,
-      image: req.file?.path,
+      image,
       categoryId,
       quantity,
       sold,
       shipping,
     })
+
 
     await newProduct.save()
 
@@ -119,8 +134,9 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
     }
 
     if (product && product.image) {
-      if (product.image !== 'public/images/productsImages/defaultProductImage.png') {
-        await deleteImage(product.image)
+      if (product.image !== `${baseURL}public/images/productsImages/defaultProductImage.png`) {
+        const publicId = await valueWithoutExtension(product.image);
+          await deleteFromCloudinary(`sda-ecommerce/productsImage/${publicId}`);
       }
     }
 
@@ -130,27 +146,47 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
   }
 }
 
+
 export const updateProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { title } = req.body
+    const { title } = req.body;
+
+    const newImage = req.file?.path;
+
     if (title) {
-      req.body.slug = slugify(title)
+      req.body.slug = slugify(title);
     }
 
-    const id = req.params.id
-    const updatedProductData = { ...req.body, image: req.file?.path }
+    const id = req.params.id;
+    const existingProduct = await Product.findById(id);
 
-    const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true })
+if (!existingProduct) {
+  throw new ApiError(404, `No product found with this id ${id}`);
+}
+
+let updatedProductData: any = { ...req.body };
+if (newImage) {
+  
+  const uploadedImageUrl = await uploadToCloudinary(newImage, "sda-ecommerce/productsImage");
+
+  if (existingProduct.image !== `${baseURL}public/images/productsImages/defaultProductImage.png`) {
+  const publicId = await valueWithoutExtension(existingProduct.image);
+  await deleteFromCloudinary(`sda-ecommerce/productsImage/${publicId}`);
+  }
+  updatedProductData = { ...updatedProductData, image: uploadedImageUrl };
+}
+const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true });
 
     if (updatedProduct) {
-      successResponse(res, 200, `Product ${id} is updated`, updatedProduct)
+      successResponse(res, 200, `Product ${id} is updated`, updatedProduct);
     } else {
-      throw new ApiError(404, `No product found with this id ${id}`)
+      throw new ApiError(404, `No product found with this id ${id}`);
     }
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
 
 export const updateProductDiscount = async (req: Request, res: Response, next: NextFunction) => {
   try {

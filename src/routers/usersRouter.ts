@@ -8,18 +8,18 @@ import { isAdmin, isLoggedIn, isLoggedOut } from '../middlewares/auth'
 
 const router = express.Router()
 
-router.get('/', isLoggedIn,isAdmin,user.getAllUsers)
+router.get('/',user.getAllUsers)
 
 
 router.get('/:id',isLoggedIn,user.getOneUser)
 
 router.post('/',uploadUserImg.single('image'),validateuser,runValidation,user.newUser)
 
-router.put('/:id' , isLoggedIn,user.updateUser)
+router.put('/:id' , isLoggedIn,isAdmin,user.updateUser)
 
-router.put("/user/ban/:id",isLoggedIn,isAdmin,user.updateBan)
+router.put("/user/ban/:id", isLoggedIn,isAdmin,user.updateBan)
 
-router.delete("/user/delete/:id",isLoggedIn,isAdmin,user.deleteSingleUser)
+router.delete("/user/delete/:id", isLoggedIn,isAdmin,user.deleteSingleUser)
 
 router.get('/user/activate/:token',user.activateUser)
 

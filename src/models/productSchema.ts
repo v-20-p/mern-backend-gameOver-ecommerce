@@ -1,6 +1,7 @@
 import { Document, Schema, model } from 'mongoose'
 
 import { CategoryInterface } from './categorySchema'
+import { baseURL } from '../config'
 
 export interface ProductInterface extends Document {
   id: string
@@ -53,10 +54,10 @@ const productSchema = new Schema(
     },
     image: {
       type: String,
-      default: 'public/images/productsImages/defaultProductImage.png',
+      default: `${baseURL}public/images/productsImages/defaultProductImage.png`,
     },
     categoryId: {
-      type: Schema.Types.ObjectId,
+      type: [Schema.Types.ObjectId],
       ref: 'Category',
       required: true,
     },

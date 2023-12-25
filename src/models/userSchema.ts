@@ -1,4 +1,8 @@
 import mongoose from 'mongoose'
+import { baseURL } from '../config';
+
+
+
 
 const userSchema = new mongoose.Schema({
   userName: {
@@ -20,7 +24,7 @@ const userSchema = new mongoose.Schema({
   },
   image:{
     type:String,
-    default:'public/images/usersimages/default_user.png'
+    default:`${baseURL}public/images/usersimages/default_user.png`
   },
 
   isAdmin:{

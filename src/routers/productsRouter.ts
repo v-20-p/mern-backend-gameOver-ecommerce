@@ -24,12 +24,10 @@ productsRouter.post(
   products.createProduct
 )
 
-productsRouter.delete('/:id', isLoggedIn, isAdmin, products.deleteProduct)
+productsRouter.delete('/:id', isLoggedIn,isAdmin, products.deleteProduct)
 
 productsRouter.put(
   '/update-product-info/:id',
-  isLoggedIn,
-  isAdmin,
   uploadProductImg.single('image'),
   validateUpdateProduct,
   runValidation,
@@ -38,8 +36,7 @@ productsRouter.put(
 
 productsRouter.put(
   '/update-product-discount/:id',
-  isLoggedIn,
-  isAdmin,
+isLoggedIn,isAdmin,
   validateDiscount,
   runValidation,
   products.updateProductDiscount

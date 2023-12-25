@@ -1,17 +1,41 @@
 import { Request, Response, NextFunction } from 'express'
 import { Users } from '../models/userSchema'
-import Jwt, { JwtPayload } from 'jsonwebtoken'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { sendEmail } from '../services/emailServices'
-import { dev } from '../config'
+import { baseURL, dev } from '../config'
 import ApiError from '../errors/ApiError'
 import { deleteImage } from '../services/deleteImageService'
+import { deleteFromCloudinary, uploadToCloudinary, valueWithoutExtension } from '../services/cloudirnaryServeice'
 
 const generateToken = (encodedData: any) => {
-  return Jwt.sign(encodedData, dev.app.secret_key, {
+  return jwt.sign(encodedData, dev.app.secret_key, {
     expiresIn: '3h',
   })
 }
+export const createJsonWebToken = (
+  tokenPayload: object,
+  secretKey: string,
+  expiresIn: string
+) => {
+  try {
+    if(!tokenPayload || Object.keys(tokenPayload).length === 0){
+        throw new ApiError(404, 'token payload must be a non-empty object')
+    }
+
+    if (secretKey === "" || typeof secretKey !== "string") {
+        throw new ApiError(404, "Secret key must be a non-empty string");
+    }
+
+    const token = jwt.sign(tokenPayload, secretKey, {
+      expiresIn: expiresIn,
+    });
+
+    return token;
+  } catch (error) {
+    throw error 
+  }
+};
 
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -61,12 +85,12 @@ export const newUser = async (req: Request, res: Response, next: NextFunction) =
     if (image) {
       newUserBody = { ...newUserBody, image }
     }
-    const token = Jwt.sign(newUserBody, dev.app.secret_key, { expiresIn: '10m' })
+    const token = jwt.sign(newUserBody, dev.app.secret_key, { expiresIn: '10m' })
     sendEmail(
       newUserBody.email,
       'activate your acount',
       `<h1>hi , ${name}</h1>
-        <p>you can activate your acount <a href='/users/activate/${token}' >hare</a></p>
+        <p>you can activate your acount <a href='http://localhost:5050/api/users/user/activate/${token}' >hare</a></p>
         <br>
         <p>if is not you please ignore this message</p>
         `
@@ -89,15 +113,27 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
   try {
     const { token } = req.params
 
-    const decodedToken = await Jwt.verify(token, dev.app.secret_key)
+    const decodedToken = await jwt.verify(token, dev.app.secret_key) as JwtPayload
+    console.log(decodedToken)
     if (!decodedToken) {
       throw ApiError.badRequest(403, 'Token was invalid')
     }
+    if(decodedToken.image){
+      const cloudinaryUrl = await uploadToCloudinary(
+        decodedToken.image,
+        'sda-ecommerce/usersimages'
+      );
+  
+     // adding the cloudinary url to
+      decodedToken.image = cloudinaryUrl;
+    }
+
 
     const user = new Users(decodedToken)
     await user.save()
 
-    res.status(200).send({ message: 'User activated successfully.', user: decodedToken })
+    // res.status(200).send({ message: 'User activated successfully.', user: decodedToken })
+    res.redirect(301,'http://localhost:3000/login')
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
       return res
@@ -142,6 +178,8 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
 
     const user = await Users.findOne({ email })
 
+    
+
     if (!user || user.isBan) {
       return res.status(404).send({
         message: 'User not found.',
@@ -156,10 +194,19 @@ export const loginUser = async (req: Request, res: Response, next: NextFunction)
       maxAge: 15 * 60 * 1000, //15 minutes
       httpOnly: true,
       sameSite: 'none',
+      secure:true
     })
 
     res.status(200).send({
       message: 'User login successfully.',
+      user:{
+        _id:user._id,
+        name:user.name,
+        email:user.email,
+        isAdmin:user.isAdmin,
+        isBan:user.isBan,
+        userName:user.userName
+      }
     })
   } catch (error) {
     console.log(error)
@@ -178,7 +225,7 @@ export const logoutUser = async (req: Request, res: Response, next: NextFunction
 }
 export const updateBan = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const id = req.params.id // Assuming you get id from the route parameters
+    const id = req.params.id 
     const user = await Users.findById(id)
 
     if (!user) {
@@ -206,8 +253,14 @@ export const deleteSingleUser = async (req: Request, res: Response, next: NextFu
     }
 
     if (user && user.image) {
-      await deleteImage(user.image)
+      if (user.image !== `${baseURL}public/images/usersimages/default_user.png`) {
+
+          const publicId = await valueWithoutExtension(user.image);
+          await deleteFromCloudinary(`sda-ecommerce/usersimages/${publicId}`);
+        }
+      
     }
+
 
     res.status(200).json({
       message: `Deleted user with ID: ${id}`,
@@ -220,44 +273,43 @@ export const deleteSingleUser = async (req: Request, res: Response, next: NextFu
 
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email } = req.body
-    const user = await Users.findOne({ email })
+    const { email } = req.body;
+    const user = await Users.findOne({ email });
+
     if (!user) {
       return res.status(404).send({
         message: 'User not found.',
-      })
+      });
     }
 
-    const resetToken = Jwt.sign({ userId: user._id }, dev.app.secret_key, {
-      expiresIn: '1h',
-    })
+    const token = createJsonWebToken({ email }, String(dev.app.access_key), '10m');
+    const encodedToken = encodeURIComponent(token);
 
-    const resetLink = `http://localhost:5050/users/reset-password/${resetToken}`
+
     await sendEmail(
       user.email,
       'Reset Your Password',
       `<h1>Hi, ${user.name}</h1>
         <p>You can reset your password by clicking the following link:</p>
-        <a href='${resetLink}'>Reset Password</a>
+        <a href='http://localhost:3000/reset?token=${encodedToken}'>Reset Password v</a>
         <br>
         <p>If you did not request a password reset, please ignore this email.</p>`
-    )
+    );
 
     res.status(200).send({
       message: 'Password reset email sent successfully. Check your inbox for instructions.',
-      resetToken
-    })
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { token, newPassword } = req.body
 
     // Verify the reset token
-    const decodedToken = Jwt.verify(token, dev.app.secret_key) as JwtPayload
+    const decodedToken = jwt.verify(token, dev.app.access_key) as JwtPayload
 
     if (!decodedToken) {
       return res.status(403).send({
@@ -265,14 +317,14 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
       })
     }
 
-    const user = await Users.findOne({ _id: decodedToken.userId })
+    const user = await Users.findOne({ email: decodedToken.email })
 
     if (!user) {
       return res.status(404).send({
         message: 'User not found.',
       })
     }
-    user.password = await bcrypt.hash(newPassword, 7)
+    user.password = await bcrypt.hash(newPassword, 3)
     await user.save()
 
     res.status(200).send({

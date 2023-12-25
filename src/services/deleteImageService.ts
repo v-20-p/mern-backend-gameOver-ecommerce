@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 
 export const deleteImage = async (imagePath: string) => {
   try {
-    if (imagePath == '') {
+    if (imagePath == '/public/images/usersimages/default_user.png') {
       return
     }
     await fs.unlink(imagePath)
