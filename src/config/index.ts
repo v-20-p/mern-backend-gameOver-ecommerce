@@ -22,4 +22,4 @@ export const dev = {
 
   },
 }
-export const baseURL = 'https://sda-online-mern-backend-ecommerce.vercel.app'
+export const baseURL = 'https://sda-online-mern-backend-ecommerce.vercel.app/'
