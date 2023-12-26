@@ -18,14 +18,19 @@ config()
 export const app: Application = express()
 const PORT = 5050
 
-const URL = process.env.MONGODB_URL as string
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 connectDB()
 
 // app.use(myLogger)
 // app.use(morgan('dev'));
 app.use(cors({
-  origin: '*',
+  origin:'*',
   credentials:true
 }));
 
