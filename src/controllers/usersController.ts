@@ -133,7 +133,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
     await user.save()
 
     // res.status(200).send({ message: 'User activated successfully.', user: decodedToken })
-    res.redirect(301,'http://localhost:3000/login?value=2')
+    res.redirect(301,'https://gamevover.netlify.app/login?value=2')
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
       return res
@@ -291,7 +291,7 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
       'Reset Your Password',
       `<h1>Hi, ${user.name}</h1>
         <p>You can reset your password by clicking the following link:</p>
-        <a href='http://localhost:3000/reset?token=${encodedToken}'>Reset Password v</a>
+        <a href='https://gamevover.netlify.app/reset?token=${encodedToken}'>Reset Password v</a>
         <br>
         <p>If you did not request a password reset, please ignore this email.</p>`
     );
