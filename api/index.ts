@@ -41,7 +41,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('healthe checkup')
+  res.send('healthe checkup1')
 })
 
 app.use('/api/users', usersRouter)
