@@ -2,6 +2,7 @@ import express, { Router } from 'express'
 
 import {
   deleteOrderById,
+  generatePaymentToken,
   getAllOrders,
   getOrderById,
   placeOrder,
@@ -17,7 +18,7 @@ const router = express.Router()
 router.get('/', getAllOrders)
 
 //POST: /api/orders -> create order
-router.post('/', placeOrder)
+router.post('/', isLoggedIn,placeOrder)
 
 //GET: /api/orders:orderId -> return detail of single order
 router.get('/:orderId', validateIdOrder, runValidation, getOrderById)
@@ -27,5 +28,7 @@ router.put('/:orderId', validateIdOrder, runValidation, updateOrderById)
 
 //DELETE: /api/orders:orderId -> delete single order by Id
 router.delete('/:orderId', isLoggedIn,isAdmin ,validateIdOrder, runValidation, deleteOrderById)
+
+router.get('/payment/token',isLoggedIn,generatePaymentToken)
 
 export default router

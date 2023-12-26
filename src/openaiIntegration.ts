@@ -20,7 +20,7 @@ export async function handleUserMessage(message: string) {
       max_tokens: 50, 
     });
 
-    const openaiResponse = response.choices[0]?.text.slice(4) || 'No response from OpenAI.';
+    const openaiResponse = response.choices[0]?.text || 'No response from OpenAI.';
     return openaiResponse;
   } catch (error: any) {
     console.error('Error interacting with OpenAI:', error.message);

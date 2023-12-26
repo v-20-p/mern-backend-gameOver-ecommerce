@@ -133,7 +133,7 @@ export const activateUser = async (req: Request, res: Response, next: NextFuncti
     await user.save()
 
     // res.status(200).send({ message: 'User activated successfully.', user: decodedToken })
-    res.redirect(301,'http://localhost:3000/login')
+    res.redirect(301,'http://localhost:3000/login?value=2')
   } catch (error: any) {
     if (error.name === 'TokenExpiredError') {
       return res
@@ -334,3 +334,4 @@ export const resetPassword = async (req: Request, res: Response, next: NextFunct
     next(error)
   }
 }
+

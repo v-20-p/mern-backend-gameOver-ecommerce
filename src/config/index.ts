@@ -15,5 +15,11 @@ export const dev = {
     cloudinaryApiKey: process.env.CLOUDINARY_API_KEY,
     cloudinaryApiSecret: process.env.CLOUDINARY_API_SECRET_KEY,
   },
+  payment: {
+    merchantId: String(process.env.merchantId),
+    publicKey: String(process.env.publicKey),
+    privateKey: String(process.env.privateKey),
+
+  },
 }
-export const baseURL = 'http://localhost:5050/'
+export const baseURL = 'https://sda-online-mern-backend-ecommerce.vercel.app'

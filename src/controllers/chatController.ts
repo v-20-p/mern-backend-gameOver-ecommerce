@@ -32,7 +32,7 @@ export const sendMessage = async (req: CustomRequest, res: Response, next: NextF
 
     await userChat.save()
 
-    res.json({ botMessage: { sender: 'bot', content: openaiResponse } })
+    res.json({ botMessage: { sender: 'bot', content: openaiResponse,_id:userChat._id } })
   } catch (error) {
     next(error)
   }

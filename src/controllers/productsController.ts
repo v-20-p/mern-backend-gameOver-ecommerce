@@ -3,7 +3,7 @@ import slugify from 'slugify'
 
 import ApiError from '../errors/ApiError'
 import { Product, ProductInterface } from '../models/productSchema'
-import { deleteImage } from '../services/deleteImageService'
+
 import { discount } from '../services/discountService'
 import { deleteFromCloudinary, uploadToCloudinary, valueWithoutExtension } from '../services/cloudirnaryServeice'
 import { baseURL } from '../config'
@@ -35,7 +35,7 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
     let filter = {};
     categoryFilter
       ? (filter = {
-          categoryId: { $in: categoryFilter },
+          categoryId: { $eq: categoryFilter },
           $or: [{ title: { $regex: searchRegExp } }, { description: { $regex: searchRegExp } }],
         })
       : (filter = {
@@ -60,19 +60,37 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
     }
 
     const skip = (page - 1) * limit;
-
-    const products: ProductInterface[] = await Product.find(filter)
+    try {
+      const products: ProductInterface[] = await Product.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(limit)
       .populate('categoryId');
 
-    successResponse(res, 200, 'Return all products', {
-      products,
-      totalPages,
-      currentPage: page,
-      totalProducts: count,
-    });
+      successResponse(res, 200, 'Return all products', {
+        products,
+        totalPages,
+        currentPage: page,
+        totalProducts: count,
+      });
+      
+    } catch (error) {
+      return successResponse(res, 200, 'No products found with the given filter', {
+        products: [],
+        totalPages: 0,
+        currentPage: page,
+        totalProducts: 0,
+      });
+      
+    }
+
+
+      
+        
+
+      
+
+
   } catch (error) {
     next(error);
   }

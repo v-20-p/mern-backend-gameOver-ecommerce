@@ -2,12 +2,36 @@ import { NextFunction, Request, Response } from 'express'
 
 import Order from '../models/orderSchema'
 import { Product } from '../models/productSchema'
+import braintree from "braintree";
+import { dev } from '../config';
+import ApiError from '../errors/ApiError';
 
+
+
+
+const gateway = new braintree.BraintreeGateway({
+  environment: braintree.Environment.Sandbox,
+  merchantId: dev.payment.merchantId,
+  publicKey: dev.payment.publicKey,
+  privateKey: dev.payment.privateKey,
+});
 export const placeOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status, user, products } = req.body
-    console.log(req.body)
-    let totalPriceOfItems = 0
+    const { status, user, products ,nonce,total} = req.body
+    console.log(status, user, products ,nonce,total)
+
+    const result =await gateway.transaction
+  .sale({
+    amount: (total),
+    paymentMethodNonce: nonce,
+    options: {
+      submitForSettlement: true,
+    },
+  })
+
+    if (result.success) {
+      
+      let totalPriceOfItems = 0
     for (let item = 0; item < products.length; item++) {
       const { product, quantity } = products[item]
       
@@ -28,7 +52,6 @@ export const placeOrder = async (req: Request, res: Response, next: NextFunction
       totalPriceOfItems += productInfo.price
     }
 
-    // Create a new order
     const order = new Order({
       status,
       user,
@@ -55,6 +78,13 @@ export const placeOrder = async (req: Request, res: Response, next: NextFunction
 
     await order.save()
     res.status(201).send({ message: 'Order placed successfully.', order })
+    } else {
+      throw ApiError.badRequest(400,result.message);
+    }
+
+
+
+    
   } catch (error) {
     next(error)
   }
@@ -96,6 +126,22 @@ export const updateOrderById = async (req: Request, res: Response, next: NextFun
       throw new Error('Order not found with this ID')
     }
     res.send({ message: 'update a single product ', payload: order })
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
+
+export const generatePaymentToken = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+
+    const paymentClientToken=await gateway.clientToken.generate({})
+    if(!paymentClientToken){
+      throw ApiError.badRequest(400,'paymet token is not generate')
+    }
+    res.status(200).send(paymentClientToken)
   } catch (error) {
     next(error)
   }
