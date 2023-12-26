@@ -25,11 +25,11 @@ connectDB()
 // app.use(myLogger)
 // app.use(morgan('dev'));
 app.use(cors({
-  origin:['https://gamevover.netlify.app'],
+  origin:['https://gamevover.netlify.app','https://658b141c8c16a8c693df48d3--gamevover.netlify.app/'],
   credentials:true
 }));
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://gamevover.netlify.app');
+  res.header('Access-Control-Allow-Origin', ['https://gamevover.netlify.app','https://658b141c8c16a8c693df48d3--gamevover.netlify.app/']);
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Credentials', 'true');
   next();
