@@ -18,30 +18,29 @@ config()
 export const app: Application = express()
 const PORT = 5050
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  next();
-});
+const URL = process.env.MONGODB_URL as string
 
 connectDB()
 
 // app.use(myLogger)
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'https://gamevover.netlify.app');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 app.use(cors({
-  origin:'*',
+  origin:'https://gamevover.netlify.app',
   credentials:true
 }));
-
-
 app.use('/public',express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(express.json())
 
 app.get('/', (req, res) => {
-  res.send('healthe checkup1')
+  res.send('healthe checkup')
 })
 
 app.use('/api/users', usersRouter)
