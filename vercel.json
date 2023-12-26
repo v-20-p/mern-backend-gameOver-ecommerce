@@ -1,3 +1,18 @@
 {
-    "rewrites": [{ "source": "/(.*)", "destination": "/api"}]
-}
+    "rewrites": [
+      { "source": "/(.*)", "destination": "/api" }
+    ],
+    "routes": [
+      {
+        "src": "/api/(.*)",
+        "methods": ["GET", "OPTIONS"], 
+        "headers": {
+          "Access-Control-Allow-Origin": "https://gamevover.netlify.app",
+          "Access-Control-Allow-Credentials": "true",
+          "Access-Control-Allow-Methods": "GET,OPTIONS",
+          "Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept"
+        }
+      }
+    ]
+  }
+  
