@@ -12,14 +12,22 @@ import categoreisRouter from '../src/routers/categoriesRouter'
 import apiErrorHandler from '../src/middlewares/errorHandler'
 import { chatRoute } from '../src/routers/chatRouter'
 import ApiError from '../src/errors/ApiError'
-import { connectDB } from '../src/config/db'
+
 import morgan from 'morgan'
+import { dev } from './config'
 config()
 export const app: Application = express()
 const PORT = 5050
 const URL = process.env.MONGODB_URL as string
 
-connectDB()
+async () => {
+  try {
+    await mongoose.set('strictQuery', true);
+    await mongoose.connect(dev.db.url)
+  } catch (error) {
+    console.error(error)
+  }
+}
 
 // app.use(myLogger)
 app.use(morgan('dev'));
