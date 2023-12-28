@@ -17,7 +17,6 @@ import morgan from 'morgan'
 config()
 export const app: Application = express()
 const PORT = 5050
-
 const URL = process.env.MONGODB_URL as string
 
 connectDB()

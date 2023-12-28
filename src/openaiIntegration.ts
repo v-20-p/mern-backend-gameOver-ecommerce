@@ -12,7 +12,7 @@ export async function handleUserMessage(message: string) {
   
     const products = await Product.find({});
 
-    const prompt = `${products} based on this data talk about title and  description only for custmor for this message from the user : '${message}' `;
+    const prompt = `${products.slice(0,10)} based on this data talk about title and  description  for custmor for this message from the user : '${message}' `;
 
     const response = await openai.completions.create({
       model: 'text-davinci-003',

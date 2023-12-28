@@ -43,10 +43,10 @@ export const deletCategoryBySlug = async (req: Request, res: Response, next: Nex
   try {
     const category = await Category.findOneAndDelete({ slug: req.params.slug })
     if (!category) {
-      const error = createHttpError(404, 'Category not found ')
+      const error = createHttpError(404, 'Category not found with this slug')
       throw error
     }
-    res.send({ message: ' category deleted', payload: category })
+    res.send({ message: 'deleted a single category ', payload: category })
   } catch (error) {
     next(error)
   }

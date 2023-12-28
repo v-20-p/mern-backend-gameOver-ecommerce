@@ -35,7 +35,7 @@ export const getAllProducts = async (req: Request, res: Response, next: NextFunc
     let filter = {};
     categoryFilter
       ? (filter = {
-          categoryId: { $eq: categoryFilter },
+          categoryId: { $in: categoryFilter },
           $or: [{ title: { $regex: searchRegExp } }, { description: { $regex: searchRegExp } }],
         })
       : (filter = {

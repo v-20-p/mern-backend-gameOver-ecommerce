@@ -34,7 +34,6 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: FileFilterCallb
 
 export const uploadProductImg = multer({
   storage: productsStorage,
-  limits: { fileSize: 1024 * 1024 * 1 },
   fileFilter: fileFilter,
 })
 
