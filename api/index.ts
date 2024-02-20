@@ -14,19 +14,15 @@ import { chatRoute } from '../src/routers/chatRouter'
 import ApiError from '../src/errors/ApiError'
 import { connectDB } from '../src/config/db'
 import morgan from 'morgan'
+
 config()
 export const app: Application = express()
-const PORT = 5050
-const URL = process.env.MONGODB_URL as string
-
-
-
-// app.use(myLogger)
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'https://gamevover.netlify.app');
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  
   connectDB()
   next();
 });
@@ -34,6 +30,8 @@ app.use(cors({
   origin:'https://gamevover.netlify.app',
   credentials:true
 }));
+
+
 app.use('/public',express.static("public"))
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
@@ -57,10 +55,10 @@ app.use((req, res, next) => {
 })
 app.use(apiErrorHandler)
 
-app.listen(PORT, () => {
-  console.log('Server running http://localhost:' + PORT)
+// app.listen(PORT, () => {
+//   console.log('Server running http://localhost:' + PORT)
 
-})
+// })
 
   
 export default app
