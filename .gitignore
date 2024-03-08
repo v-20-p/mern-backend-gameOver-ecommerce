@@ -6,7 +6,7 @@ src/logs/requests.txt
 
 yarn.lock
 package-lock.json
-
+vercel2.json
 # Logs
 logs
 *.log
