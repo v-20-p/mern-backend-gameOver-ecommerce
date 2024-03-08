@@ -18,14 +18,21 @@ import morgan from 'morgan'
 config()
 export const app: Application = express()
 //app.use(morgan('dev'));
+const corsOptions = {
+  origin: ['https://gamevover.netlify.app', 'http://localhost:3000'],
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin',  '*');
+
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   
   connectDB()
   next();
 });
+
 
 
 
